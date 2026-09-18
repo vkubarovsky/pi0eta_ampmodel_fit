@@ -34,73 +34,7 @@ sets; and a single power $Q^{n_Q}$ cannot span $Q^2$ from $1.2$ to
 $8.3\ \mathrm{GeV}^2$.
 \end{abstract}
 
-\section{The model}
-
-\subsection{Amplitudes}
-
-The observables are built from six channel helicity amplitudes.  In the
-notation of the $\pi^0$ amplitude note,
-\[
-\begin{array}{llll}
-T_{00}^{(+)} & \text{longitudinal, recoil non-flip} &\quad
-T_{00}^{(-)} & \text{longitudinal, recoil flip}\\
-T_{01}^{(+)} & \text{natural transverse, non-flip} &\quad
-T_{01}^{(-)} & \text{natural transverse, flip}\\
-U_{01}^{(+)} & \text{unnatural transverse, non-flip} &\quad
-U_{01}^{(-)} & \text{unnatural transverse, flip}
-\end{array}
-\]
-At the level used here $T_{01}^{(-)} = U_{01}^{(-)} = D/2$, real and equal,
-which is the forward-kinematics relation; the remaining four carry the fitted
-moduli and phases.
-
-The amplitudes are constructed from flavour generalised form factors.  Each
-block $X \in \{H_T^u, H_T^d, \bar E_T^u, \bar E_T^d, L\}$ has the form
-\begin{equation}
-X(t, x_B, Q^2) \;=\; N \,
-\exp\!\big[(b + b' \ln x_B)\, t\big]\;
-\big(Q^2\big)^{n_Q/2},
-\label{eq:gff}
-\end{equation}
-so that $b$ is the $t$-slope extrapolated to $x_B = 1$ and $-b'$ plays the role
-of the Regge $\alpha'$.  This is the same convention as the Goloskokov--Kroll
-fits.  Note that an older parameter convention used
-$L = \ln x_B - \ln 0.15$; files in that convention must be converted, never
-copied raw.
-
-The flavour combinations entering each channel are
-\begin{equation}
-\pi^0 p:\ \frac{2X_u + X_d}{3\sqrt2}, \qquad
-\eta\, p:\ \frac{2X_u - X_d}{3\sqrt6\,k}, \qquad
-\pi^0 n:\ \frac{X_u + 2X_d}{3\sqrt2},
-\end{equation}
-with $k = 0.863$ in the transverse twist-3 sector (chiral condensate factors)
-and $k = 0.695$ in the longitudinal twist-2 sector (decay constants only).
-The near cancellation $2X_u - X_d$ in the $\eta$ channel is what makes that
-channel sensitive to the flavour separation, and it is the reason $\eta$ data
-carry weight far beyond their number.
-
-Writing $\xi = \frac{x_B}{2-x_B}\left(1 + M_p^2/Q^2\right)$,
-$t' = t - t_{\min}$ and $A = A(Q^2,x_B)$ for the phase-space factor,
-\begin{equation}
-D = \sqrt{2A\,(1-\xi^2)}\;\langle H_T\rangle, \qquad
-U_{01}^{(+)} = \sqrt{A\,\kappa}\;\langle \bar E_T\rangle, \qquad
-|T_{00}^{(-)}| = \sqrt{A\,\kappa}\;\langle L\rangle,
-\end{equation}
-with $\kappa = -t'/(8M_p^2)$ and $\langle\cdot\rangle$ the flavour combination
-above.  Four further parameters unlock what would otherwise be exact
-relations: $\rho_{CE}$ and $\phi_{CE}$ give $T_{01}^{(+)}$ a modulus and phase
-relative to $U_{01}^{(+)}$ (breaking $C = E$), $\phi_w$ is the phase of
-$U_{01}^{(+)}$, and $\rho_{nf}, \phi_{nf}$ give the longitudinal non-flip
-amplitude $T_{00}^{(+)}$, which vanishes at leading order.  The phase of
-$T_{00}^{(-)}$ is $\delta_0 + \delta_1 t$, common to both flavours.
-
-Finally, each $d$-flavour convolution carries a phase relative to $u$.  The
-overall phase of a channel is unobservable, so $u$ is kept real and only $d$
-carries $\varphi_{d/u}$, separately for $H_T$, $\bar E_T$ and $L$.  These are
-physical: the real and imaginary parts of a convolution have different
-$t$-slopes, so $u$ and $d$ cannot share a phase, and the $\eta$ cancellation
-therefore ceases to be exact.
+\input{sec1_new}
 
 \subsection{From amplitudes to structure functions}
 
@@ -238,8 +172,10 @@ is not a measurement.
 
 \begin{table}[htb]
 \centering\small
-\caption{Block parameters, eq.~(\ref{eq:gff}).  $N$ in nb$^{1/2}$/GeV,
-$b$ and $b'$ in GeV$^{-2}$, $n_Q$ dimensionless.}
+\caption{Block parameters, eq.~(\ref{eq:mod}).  Every block is a
+\emph{convolution} $\langle X\rangle$, not a GPD: no GPD is fitted anywhere in
+this work.  $N$ in nb$^{1/2}$/GeV, $b$ and $b'$ in GeV$^{-2}$, $n_Q$
+dimensionless.}
 \label{tab:blocks}
 \input{tab_blocks}
 \end{table}

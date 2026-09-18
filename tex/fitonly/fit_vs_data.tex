@@ -1,0 +1,22 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=12mm]{geometry}
+\usepackage{amsmath,graphicx}
+\graphicspath{{./}}
+\title{\textbf{The fit against every set in it}\\[2mm]
+\large run \texttt{C1\_with\_compass}, 11 sets, 1555 points,
+$\chi^2/\mathrm{ndf}=1.4018$}
+\author{}\date{18 September 2026}
+\begin{document}\maketitle
+\noindent
+Data red, model blue.  Each panel carries its own kinematics and $\chi^2$; the
+model curve includes the fitted normalisation where the set has one (De Masi
+1.0586, Hall A neutron 0.9776, Hall A 2016 1.0583).  Only sets that are
+\emph{in} the fit are shown here --- for the blind predictions (CLAS12 cross
+sections, the digitised De Masi $\alpha$) see the full report.
+\begin{figure}[p]\centering
+\includegraphics[width=\textwidth]{00_chi2_summary.png}
+\caption{All thirteen sets at a glance, fitted and blind.}
+\end{figure}
+\clearpage
+\input{body}
+\end{document}

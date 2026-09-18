@@ -36,9 +36,11 @@ def cell(i, tie=None):
     at = "$^{\\dagger}$" if (abs(p[i]-LO[i]) < 1e-6 or abs(p[i]-HI[i]) < 1e-6) else ""
     return f"${p[i]:.3f} \\pm {E[i]:.3f}${at}"
 
-BLK = [("$H_T^u$", 0, 1, 2, 3), ("$H_T^d$", 4, 5, 6, 7),
-       ("$\\bar E_T^u$", 8, 9, 10, 11), ("$\\bar E_T^d$", 13, 14, 12, 27),
-       ("$L$ (T00)", 15, 16, 21, 17)]
+BLK = [("$\\langle H_T\\rangle^u$", 0, 1, 2, 3),
+       ("$\\langle H_T\\rangle^d$", 4, 5, 6, 7),
+       ("$\\langle \\bar E_T\\rangle^u$", 8, 9, 10, 11),
+       ("$\\langle \\bar E_T\\rangle^d$", 13, 14, 12, 27),
+       ("$\\langle L\\rangle$", 15, 16, 21, 17)]
 TIED = {5: "$=b_u$", 6: "$=b_u'$", 7: "$=n_{Q,u}$",
         12: "$=b_u'(\\bar E_T)$", 27: "$=n_{Q,u}(\\bar E_T)$"}
 # Whole tabulars, not bodies: \input of a body inside a tabular puts
@@ -55,11 +57,12 @@ table("tex/tab_blocks.tex", "lcccc",
       [f"{nm} & " + " & ".join(cell(i, TIED.get(i)) for i in (iN, ib, ibp, inq))
        for nm, iN, ib, ibp, inq in BLK])
 
-OTH = [("$R_L=N_d/N_u$ (T00)", 18), ("$\\delta_0$", 19), ("$\\delta_1$", 20),
+OTH = [("$R_L=N_d/N_u$ ($\\langle L\\rangle$)", 18), ("$\\delta_0$", 19), ("$\\delta_1$", 20),
        ("$\\rho_{CE}$", 22), ("$\\phi_{CE}$ (frozen)", 23), ("$\\phi_w$", 24),
        ("$\\rho_{nf}$", 25), ("$\\phi_{nf}$", 26),
-       ("$\\varphi_{d/u}(H_T)$", 34), ("$\\varphi_{d/u}(\\bar E_T)$", 35),
-       ("$\\varphi_{d/u}(T_{00})$", 36)]
+       ("$\\varphi_{d/u}(\\langle H_T\\rangle)$", 34),
+       ("$\\varphi_{d/u}(\\langle \\bar E_T\\rangle)$", 35),
+       ("$\\varphi_{d/u}(\\langle L\\rangle)$", 36)]
 table("tex/tab_other.tex", "lccc",
       "parameter & value & lower & upper",
       [f"{nm} & {cell(i)} & {LO[i]:.2f} & {HI[i]:.2f}" for nm, i in OTH])
