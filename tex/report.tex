@@ -29,9 +29,9 @@ Four conclusions survive a full leave-one-out analysis: the flavour ratio
 $n/p$ is separated by four neutron points and by nothing else; one
 polarised-target
 experiment alone fixes the relative phase of two transverse amplitudes;
-$\sig{LT}$ is the model's systematic failure, seen independently in three data
-sets; and a single power $Q^{n_Q}$ cannot span $Q^2$ from $1.2$ to
-$8.3\ \mathrm{GeV}^2$.
+the preliminary CLAS12 $\sig{LT}$ disagrees in \emph{sign} with all three
+Hall A measurements; and a single power $Q^{n_Q}$ cannot span $Q^2$ from $1.2$
+to $8.3\ \mathrm{GeV}^2$.
 \end{abstract}
 
 \input{sec1_new}
@@ -323,12 +323,43 @@ database that sees this interference, and when eg1 is left out its own blind
 $\chi^2$ is 41 per point, with $\phi_w$ swinging from $-0.70$ to $+2.90$ ---
 essentially a sign flip of $\sig{T'}$.  Forty points from one experiment.
 
-\paragraph{$\sig{LT}$ is a systematic failure of the model.}  It is the worst
-described quantity in three independent sets: 20.4 per point in the blind
-prediction of the CLAS12 cross sections, 4.7 in Hall A 2016, and the worst of
-the four observables in Hall A 2021.  Since $\sig{LT}$ carries the entire
-$\cos\phi$ modulation of eq.~(\ref{eq:phidecomp}), any event generator built on
-this model will inherit the failure in the shape of its $\phi$ distribution.
+\paragraph{The experiments do not agree on the sign of $\sig{LT}$.}  This was
+at first read as a failure of the model, because the blind prediction of the
+CLAS12 cross sections gives 20.4 per point in $\sig{LT}$ against 2.4 in
+$\sig{U}$ and 3.6 in $\sig{TT}$.  It is not.  Looking at the data rather than
+at the $\chi^2$:
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+set & $\langle\sig{LT}\rangle$ & fraction negative\\
+\midrule
+Hall A 2011 & $-77.6$ & 0.86\\
+Hall A 2016 & $-42.6$ & 0.86\\
+Hall A 2021 & $-7.0$ & 0.83\\
+CLAS6 $\pi^0$ & $+0.07$ & 0.43\\
+CLAS6 $\eta$ & $-3.2$ & 0.58\\
+CLAS12 (preliminary) & $+8.3$ & 0.24\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All three Hall A measurements are firmly negative, CLAS6 sits near zero, and
+CLAS12 is positive.  The model follows the sets that are in the fit and comes
+out negative at CLAS12 kinematics, which is where the 20.4 comes from.  The
+pull grows monotonically with $x_B$, from $+2.1$ below $0.2$ to $+5.2$ above
+$0.4$ --- a pattern that looks more like a convention than like physics, and
+the CLAS12 numbers are preliminary.  In every set that is fitted, $\sig{LT}$ is
+described as well as everything else: 1.99 for CLAS6 $\pi^0$, 0.67 for CLAS6
+$\eta$, 1.64 for Hall A 2011, 2.55 for Hall A 2021.  Hall A 2016 gives 4.85,
+but its $\sig{T}$ gives 4.87 --- that set is poorly described as a whole, not
+in this one quantity.
+
+Nothing here is settled.  Either CLAS12 will change sign when it is finalised,
+or one of the two families has a convention error, or the $\sig{LT}$ of the
+proton really does change sign somewhere between these kinematics.  It matters
+for anything built on the model: $\sig{LT}$ carries the whole $\cos\phi$
+modulation of the cross section.
 
 \paragraph{A single power of $Q^2$ does not span the range.}  Hall A 2016 and
 Hall A 2021 disagree with the model in opposite directions at the two ends: at
