@@ -1,0 +1,244 @@
+% ---------------------------------------------------------------------------
+% Replacement for section 1.1 of report.tex.
+% Fixes: (i) GPD / GFF / convolution used interchangeably and never defined;
+%        (ii) no formula stating what is actually parametrised;
+%        (iii) the u-d phase present in the fit but absent from the equations;
+%        (iv) the t-slope tying between flavours never stated.
+% ---------------------------------------------------------------------------
+
+\section{The model}
+
+\subsection{What is parametrised}
+
+It is worth being explicit about the level at which this model lives, because
+three different objects are easily confused.
+
+\begin{enumerate}
+\item The \emph{generalised parton distributions} themselves,
+      $X^q(x,\xi,t)$ for $X \in \{H_T, \bar E_T, \dots\}$ and flavour
+      $q \in \{u,d\}$.  These depend on the loop momentum fraction $x$.
+\item The \emph{convolution} of a GPD with the hard subprocess,
+      obtained by integrating $x$ out.
+\item The \emph{channel helicity amplitudes}, obtained from the convolutions
+      by combining flavours with the photon couplings and the meson
+      wavefunction.
+\end{enumerate}
+
+\textbf{This model never descends to level 1.}  No integral over $x$ is
+performed anywhere, and no GPD is assumed.  What is parametrised is the
+convolution, level 2.  That is the whole point of the approach: the data are
+asked what they require of the convolutions, without committing to a GPD
+parametrisation that produces them.
+
+The convolution is
+\begin{equation}
+\langle X\rangle^q(\xi,t,Q^2) \;=\;
+\int_{-1}^{1}\! dx \; X^q(x,\xi,t)\, K(x,\xi),
+\qquad
+K(x,\xi) \;\sim\; \frac{1}{x-\xi+i\epsilon},
+\label{eq:conv}
+\end{equation}
+where $K$ is the hard-scattering kernel.  Its precise form is not needed
+below, because \eqref{eq:conv} is never evaluated -- only parametrised.  What
+matters is a structural consequence of the $i\epsilon$: the convolution is a
+\emph{complex number},
+\begin{equation}
+\operatorname{Im}\langle X\rangle^q = \pi\, X^q(\xi,\xi,t),
+\qquad
+\operatorname{Re}\langle X\rangle^q = \mathcal{P}\!\!\int\! dx\, X^q K ,
+\label{eq:reim}
+\end{equation}
+the imaginary part coming from the pole and the real part from the principal
+value.  Since the $x$-shapes of $u$ and $d$ differ, $\langle X\rangle^u$ and
+$\langle X\rangle^d$ cannot be assumed to share a phase.
+
+\paragraph{The ansatz.}
+Each convolution is parametrised by a modulus and a phase, separately for each
+flavour:
+\begin{align}
+\bigl|\langle X\rangle^q\bigr| &= N_q \,
+   \exp\!\big[(b_q + b'_q \ln x_B)\, t\big]\;
+   \big(Q^2\big)^{n_Q^q/2},
+\label{eq:mod}\\[2pt]
+\arg\langle X\rangle^{d} - \arg\langle X\rangle^{u} &= \varphi_X .
+\label{eq:phase}
+\end{align}
+The overall phase of a channel is unobservable, so $u$ is taken real and only
+$d$ carries $\varphi_X$.  The parameters mean:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+$N$        & normalisation \\
+$b$        & $t$-slope extrapolated to $x_B = 1$ \\
+$b'$       & the slope at a given $x_B$ is $b + b'\ln x_B$, so $-b'$ plays the
+             role of the Regge $\alpha'$ \\
+$n_Q$      & power of $Q^2$ \\
+$\varphi$  & phase of the $d$ convolution relative to $u$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+This is the same slope convention as the Goloskokov--Kroll fits.  An older
+parameter convention used $L = \ln x_B - \ln 0.15$, so that $b$ was the slope
+at $x_B = 0.15$; files in that convention must be converted
+($b_{\rm new} = b + 1.897\,b'$), never copied raw.
+
+Three blocks are parametrised this way: $\langle H_T\rangle$ and
+$\langle \bar E_T\rangle$, which build the transverse amplitudes, and a
+longitudinal block $\langle L\rangle$, which builds $T_{00}^{(-)}$.  The
+labels $H_T$ and $\bar E_T$ name the GPD being convolved; the object that
+carries the parameters is always the convolution, never the GPD itself.
+
+\paragraph{Assumptions, stated plainly.}
+Equations~\eqref{eq:mod} and~\eqref{eq:phase} embody two approximations that
+should not be hidden.  A single exponential in $t$ for the modulus, and a
+$t$-independent phase, are together equivalent to assuming that
+$\operatorname{Re}\langle X\rangle$ and $\operatorname{Im}\langle X\rangle$
+share a common $t$-slope: if they did not, the modulus
+$\sqrt{\smash[b]{\operatorname{Re}^2 + \operatorname{Im}^2}}$ would not be a
+single exponential and $\varphi = \arctan(\operatorname{Im}/\operatorname{Re})$
+would depend on $t$.  Nothing forces that common slope; it is an assumption of
+convenience, and relaxing it costs one parameter per block
+($\varphi \to \varphi_0 + \varphi_1 t$, as already used for the phase of
+$T_{00}^{(-)}$).
+
+\subsection{From convolutions to channel amplitudes}
+
+The observables are built from six channel helicity amplitudes.  In the
+notation of the $\pi^0$ amplitude note,
+\[
+\begin{array}{llll}
+T_{00}^{(+)} & \text{longitudinal, recoil non-flip} &\quad
+T_{00}^{(-)} & \text{longitudinal, recoil flip}\\
+T_{01}^{(+)} & \text{natural transverse, non-flip} &\quad
+T_{01}^{(-)} & \text{natural transverse, flip}\\
+U_{01}^{(+)} & \text{unnatural transverse, non-flip} &\quad
+U_{01}^{(-)} & \text{unnatural transverse, flip}
+\end{array}
+\]
+At the level used here $T_{01}^{(-)} = U_{01}^{(-)} = D/2$, real and equal,
+which is the forward-kinematics relation; the remaining four carry the fitted
+moduli and phases.
+
+The photon couples to quark $q$ with charge $e_q$, and the meson wavefunction
+selects which combination survives.  With
+$\pi^0 = (u\bar u - d\bar d)/\sqrt2$ and
+$\eta_8 = (u\bar u + d\bar d - 2s\bar s)/\sqrt6$, the coefficient of each
+convolution is $\sum_q (\text{meson amplitude}) \times e_q$.  The strange term
+drops out, for the reason given below.  Writing $X_q \equiv |\langle X\rangle^q|$, this gives
+\begin{equation}
+\langle X\rangle_{\pi^0 p} = \frac{2X_u + X_d\,e^{i\varphi_X}}{3\sqrt2},
+\qquad
+\langle X\rangle_{\eta p} = \frac{2X_u - X_d\,e^{i\varphi_X}}{3\sqrt6\,k},
+\qquad
+\langle X\rangle_{\pi^0 n} = \frac{X_u + 2X_d\,e^{i\varphi_X}}{3\sqrt2}.
+\label{eq:flavour}
+\end{equation}
+A superscript on $\langle X\rangle$ is a flavour, a subscript is a channel:
+$\langle X\rangle^u$ and $\langle X\rangle^d$ are the convolutions of
+\eqref{eq:conv}, while $\langle X\rangle_{\rm ch}$ is the channel combination
+built from them.  The relative sign differs between $\pi^0$ and $\eta$
+because $e_d < 0$ meets
+$-d\bar d$ in the $\pi^0$ and $+d\bar d$ in the $\eta$.  The neutron entry is
+not new physics: it is the same meson factor with isospin applied to the
+\emph{target}, $X_u^n = X_d^p$ and $X_d^n = X_u^p$.
+
+\paragraph{Why there is no strange term, and no gluon term.}
+Pseudoscalar meson production filters the $C$-odd, valence-like combination of
+quark GPDs -- the hard kernel enters antisymmetrised in $x \to -x$, so quark
+and antiquark contributions appear with opposite sign.  A symmetric sea,
+$q_{\rm sea} = \bar q_{\rm sea}$, therefore cancels identically in that
+combination.  Strangeness in the nucleon is pure sea, so
+$\langle X\rangle^s = 0$ to the extent that $s = \bar s$; the approximation
+fails only through the strangeness asymmetry $s - \bar s$, which is small.
+This is why the $-2s\bar s$ piece of $\eta_8$ can be dropped in
+\eqref{eq:flavour} without an additional parameter.
+
+The same $C$-parity argument removes the gluon contribution altogether, which
+is what makes $\pi^0$ and $\eta$ production a comparatively clean probe of the
+valence sector: unlike vector mesons, there is no gluon GPD entering at this
+order.  The singlet component of the $\eta$ survives only through the
+$\eta$--$\eta'$ mixing of the decay constants, which is carried by $k_L$ in
+\eqref{eq:kL}, not by an independent amplitude.
+
+The combination in \eqref{eq:flavour} is a sum of \emph{amplitudes}; the
+squaring happens only later, in \eqref{eq:gram}.  The phase $\varphi_X$ is
+therefore physical and not removable: at $\varphi_X = 0$ the $\eta$ amplitude
+can pass through an exact zero when $X_d = 2X_u$, whereas for
+$\varphi_X \neq 0$
+\begin{equation}
+\bigl|2X_u - X_d e^{i\varphi_X}\bigr|^2
+ = 4X_u^2 + X_d^2 - 4X_uX_d\cos\varphi_X
+\label{eq:floor}
+\end{equation}
+has a floor of $4X_u^2\sin^2\varphi_X$.  Note also that this expression is
+\emph{even} in $\varphi_X$: the unpolarised structure functions cannot
+determine the sign of the phase, which is fixed only by the interference terms
+$\sig{LT}$ and $\sig{LT'}$.
+
+The factor $k$ is not flavour algebra but meson normalisation, and it enters
+as a divisor, so $1/k$ is an enhancement of the $\eta$ channel.  In the
+longitudinal twist-2 sector the meson enters through its decay constant; in
+the two-mixing-angle scheme ($\theta_8 = -21.2^\circ$, $\theta_1 = -9.2^\circ$,
+$f_8 = 1.26 f_\pi$, $f_1 = 1.17 f_\pi$),
+\begin{equation}
+k_L^{-1} = \Big(\cos\theta_8 - \sqrt2\,\tfrac{f_1}{f_8}\sin\theta_1\Big)
+           \frac{f_8}{f_\pi} = 1.439
+\qquad\Longrightarrow\qquad k_L = 0.695 .
+\label{eq:kL}
+\end{equation}
+In the transverse twist-3 sector the meson enters through the chiral-odd
+twist-3 distribution amplitude, normalised by
+$\mu_M \sim m_M^2/(m_u+m_d)$, giving $k_T = 0.863$.
+% TODO(VPK): k_T = 0.863 is currently a bare constant in the code with no
+% derivation on record.  Give it the same explicit one-line formula as k_L,
+% or quote the source.  It multiplies every eta transverse amplitude.
+
+The near cancellation $2X_u - X_d$ in the $\eta$ channel is what makes that
+channel sensitive to the flavour separation, and it is the reason $\eta$ data
+carry weight far beyond their number.
+
+\paragraph{The amplitudes themselves.}
+Writing $\xi = \frac{x_B}{2-x_B}\left(1 + M_p^2/Q^2\right)$,
+$t' = t - t_{\min}$ and $A = A(Q^2,x_B)$ for the phase-space factor,
+\begin{equation}
+D = \sqrt{2A\,(1-\xi^2)}\;\langle H_T\rangle_{\rm ch}, \qquad
+U_{01}^{(+)} = \sqrt{A\,\kappa}\;\langle \bar E_T\rangle_{\rm ch}, \qquad
+|T_{00}^{(-)}| = \sqrt{A\,\kappa}\;\langle L\rangle_{\rm ch},
+\label{eq:amps}
+\end{equation}
+with $\kappa = -t'/(8M_p^2)$ and the subscript ``ch'' the channel combination
+of \eqref{eq:flavour}.  Four further parameters unlock what would otherwise be
+exact relations: $\rho_{CE}$ and $\phi_{CE}$ give $T_{01}^{(+)}$ a modulus and
+phase relative to $U_{01}^{(+)}$ (breaking $C = E$), $\phi_w$ is the phase of
+$U_{01}^{(+)}$, and $\rho_{nf}, \phi_{nf}$ give the longitudinal non-flip
+amplitude $T_{00}^{(+)}$, which vanishes at leading order.  The phase of
+$T_{00}^{(-)}$ is $\delta_0 + \delta_1 t$, common to both flavours -- note
+that this one phase is allowed a $t$-dependence, unlike $\varphi_X$.
+
+\subsection{What is free and what is tied}
+
+The flavours are not treated symmetrically, and the pattern is a model
+assumption worth stating.  For fit \texttt{\fittag}:
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+block & slope $u$ & slope $d$ & $d/u$ ratio & phase $\varphi$ [rad] \\
+      & \multicolumn{2}{c}{[GeV$^{-2}$, at $x_B = 0.25$]} & & \\
+\midrule
+$\langle H_T\rangle$       & 1.491 & 1.491 (tied to $u$) & $-0.296$ & $-1.261$ \\
+$\langle \bar E_T\rangle$  & 1.110 & 5.720 (free)        & $0.935$  & $0.230$  \\
+$\langle L\rangle$         & 1.780 & $= u$               & $-0.584$ & $0.512$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Only $\langle \bar E_T\rangle$ is allowed an independent $t$-slope per
+flavour, and it uses that freedom: the $d$ slope comes out five times the $u$
+slope.  For $\langle H_T\rangle$ and for the longitudinal block the two
+flavours share one slope and differ only in normalisation and phase.  Whether
+$\langle H_T\rangle$ would also want a split slope is not tested here.

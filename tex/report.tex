@@ -54,17 +54,48 @@ Only the moduli of $T_{01}$ and $U_{01}$ enter $\sig{T}$ and $\sig{TT}$; their
 later: it is why one polarised-target experiment is the sole constraint on that
 phase.
 
-The measured cross section is the standard decomposition
-\begin{equation}
-\frac{d^2\sigma}{dt\,d\phi} = \frac{1}{2\pi}\Big[
-\sig{T} + \epsilon\,\sig{L}
+The measured cross section, for beam helicity $h = \pm 1$ and a
+\emph{longitudinally} polarised target of polarisation $\Lambda$, is
+\begin{align}
+\frac{d^2\sigma}{dt\,d\phi} = \frac{1}{2\pi}\Big[\;
+& \sig{T} + \epsilon\,\sig{L}
 + \epsilon\cos 2\phi\; \sig{TT}
 + \sqrt{2\epsilon(1+\epsilon)}\cos\phi\; \sig{LT}
-+ h\sqrt{2\epsilon(1-\epsilon)}\sin\phi\; \sig{LT'}\Big],
++ h\sqrt{2\epsilon(1-\epsilon)}\sin\phi\; \sig{LT'}
+\notag\\[1mm]
+& + \Lambda\Big(\sqrt{2\epsilon(1+\epsilon)}\sin\phi\; \sig{LT}^{UL}
+              + \epsilon\sin 2\phi\; \sig{TT}^{UL}\Big)
+\notag\\[1mm]
+& + h\Lambda\Big(\sqrt{1-\epsilon^2}\; \sig{T'}
+               + \sqrt{2\epsilon(1-\epsilon)}\cos\phi\; \sig{LT'}^{LL}\Big)
+\;\Big],
 \label{eq:phidecomp}
+\end{align}
+with $\phi$ in the Trento convention.  The first line, which is all that
+survives at $\Lambda = 0$, is identical to eq.~(B4) of the CLAS6 paper and
+eq.~(2) of COMPASS.  The second line is the target-spin asymmetry $A_{UL}$ and
+the third the double-spin asymmetry $A_{LL}$; dividing each term by
+$\sigma_0 = \sig{T} + \epsilon\sig{L}$ gives the four moments that are measured
+and that enter this fit,
+\begin{equation}
+A_{UL}^{\sin\phi} = \frac{\sqrt{2\epsilon(1+\epsilon)}\,\sig{LT}^{UL}}{\sigma_0},
+\quad
+A_{UL}^{\sin 2\phi} = \frac{\epsilon\,\sig{TT}^{UL}}{\sigma_0},
+\quad
+A_{LL}^{\rm const} = \frac{\sqrt{1-\epsilon^2}\,\sig{T'}}{\sigma_0},
+\quad
+A_{LL}^{\cos\phi} = \frac{\sqrt{2\epsilon(1-\epsilon)}\,\sig{LT'}^{LL}}{\sigma_0}.
+\label{eq:polmoments}
 \end{equation}
-identical to eq.~(B4) of the CLAS6 paper and eq.~(2) of COMPASS, with $\phi$ in
-the Trento convention and $h$ the beam helicity.
+
+Two remarks on the scope of eq.~(\ref{eq:phidecomp}).  A \emph{transversely}
+polarised target requires structure functions this model does not carry, so only
+the longitudinal case is written.  And the hadronic tensor from which the first
+line is usually derived --- eq.~(10) of the radiative-correction note --- is
+summed over the target spin and is built only from the photon basis vectors
+$X$, $Y$, $\ell$; the last two lines require the terms linear in the target spin
+vector $S^\mu$, which that tensor does not have.  The generator inherits the
+same restriction: it samples the first line only.
 
 \section{The data}
 
