@@ -1,5 +1,12 @@
 # RC iteration: self-consistent radiative corrections with the amplitude model
 
+> **Renamed 2026-09-23.** This directory was `~/rc_iter1` (github `vkubarovsky/rc_iter1`)
+> until then; the prototype it grew out of, `~/pi0_eta_amplitude_model` (27 Aug, 10 commits),
+> is now `~/pi0eta_ampmodel_v0`. Provenance comments in other repos -- exclurad_py,
+> hepgen_fit, clas12_pi0_rc -- still say `rc_iter1`, and are left alone on purpose: they
+> record the path as it was when a model was fitted. `params_*.md` here likewise keep the
+> old path in their headers, for the same reason.
+
 State as of 2026-08-28, ~14:00. **Read this first after any context loss.**
 
 ## What this is
@@ -42,7 +49,7 @@ context was tightening, and while it ran I restored
 swapped the model under the running workers.  Its partial output was deleted.
 Nothing downstream used it.  To resume, from a clean tree:
 
-    cd ~/rc_iter1 && ./iterate.sh i2 fitpar_i1.npy      # ~25 min
+    cd ~/pi0eta_ampmodel_fit && ./iterate.sh i2 fitpar_i1.npy      # ~25 min
     # then compare fitpar_i2.npy with fitpar_i1.npy; if the drift is small,
     # freeze as amp2026 and install into exclurad_py.
 
@@ -66,7 +73,7 @@ parameter file.  Do not touch that file while an iteration runs.
 * amp2021 validity floor must be W2 >= 3.3, not 4.0: a 4.0 floor costs up to
   5.6% of eta in the lowest-W2 bins (production/tail_reach.py in exclurad_py).
 * `iterate.sh` OVERWRITES exclurad_py/models/amp2021_par.npy.  The frozen
-  published-data parameters are ~/pi0_eta_amplitude_model/fitpar_amp27c.npy.
+  published-data parameters are ~/pi0eta_ampmodel_v0/fitpar_amp27c.npy.
 
 ## Variant study (2026-08-28, with the R_ET prior restored)
 
@@ -149,7 +156,7 @@ difference on 2619 structure-function values over a (channel, xB, Q2, t) grid.
 
 TRAP: parameter files are now in TWO conventions.  New (ln xB): `fitpar_amp2026_lx.npy`,
 `fitpar_slope*.npy`.  Old (offset): `fitpar_i1/i2`, `fitpar_A/B/C_prior`,
-`fitpar_amp2021_published`, everything in `~/pi0_eta_amplitude_model`, and BOTH
+`fitpar_amp2021_published`, everything in `~/pi0eta_ampmodel_v0`, and BOTH
 .npy files inside exclurad_py (whose `models/_amplitude_fit.py` still has the
 offset).  `iterate.sh` now converts with `reparam.to_old` before installing;
 `fit_clas12.py`'s default seed is the new-convention `fitpar_slope.npy`.

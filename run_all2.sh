@@ -5,7 +5,7 @@
 # every fit to the same distorted place.
 set -u
 PY=~/.venv/bin/python3
-cd ~/rc_iter1
+cd ~/pi0eta_ampmodel_fit
 BASE="clas6_pi0,clas6_eta,halla_n,halla_y16,halla_y11,halla_y21,bsa_demasi,bsa_zhao,bsa_clas12,eg1"
 run () {
   echo "### $(date +%H:%M:%S)  $1"

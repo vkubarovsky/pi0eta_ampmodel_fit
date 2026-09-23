@@ -1,7 +1,7 @@
 #!/bin/bash
 # Freeze the converged iteration as amp2026 and register it in exclurad_py.
 set -e
-PAR=${1:-/Users/vpk/rc_iter1/fitpar_i2.npy}
+PAR=${1:-/Users/vpk/pi0eta_ampmodel_fit/fitpar_i2.npy}
 cp $PAR ~/exclurad_py/exclurad_py/models/amp2026_par.npy
 cd ~/exclurad_py
 ~/.venv/bin/python3 - <<'PY'
@@ -17,7 +17,7 @@ block = '''
 #
 # Same amplitude parameterisation as amp2021, but fitted to CLAS6 data whose
 # radiative correction was recomputed WITH the amplitude model itself, iterated
-# to a fixed point (~/rc_iter1).  amp2021 is fitted to the published data, whose
+# to a fixed point (~/pi0eta_ampmodel_fit).  amp2021 is fitted to the published data, whose
 # RC assumed a sigma_L-dominant model; the July 2026 study
 # (~/pi0eta-rc-2026-paper) showed the RC depends significantly on that
 # assumption.  amp2026 removes the assumption: sigma_L is measured, not guessed.
@@ -30,7 +30,7 @@ _AMP26_PROV = (
     "amplitude model over the full published grids, cross sections re-corrected "
     "(sigma_new = sigma_pub / r, r = eta(new)/eta(published), both from "
     "exclurad_py so the code cancels), sigma(phi) refitted, amplitudes refitted. "
-    "See ~/rc_iter1/README.md. ")
+    "See ~/pi0eta_ampmodel_fit/README.md. ")
 
 
 def _amp26_sfs(channel, t_nucl, xB, Q2):

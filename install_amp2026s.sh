@@ -3,10 +3,10 @@
 # amp2026 itself is left frozen: the OneDrive generator baseline was produced
 # with it.  amp2026s is the production model from now on.
 set -e
-PAR=${1:-/Users/vpk/rc_iter1/fitpar_prod.npy}
+PAR=${1:-/Users/vpk/pi0eta_ampmodel_fit/fitpar_prod.npy}
 PY=~/.venv/bin/python3
 # exclurad_py/models/_amplitude_fit.py still uses the ln 0.15 offset -> convert
-$PY -c "import numpy as np,sys; sys.path.insert(0,'$HOME/rc_iter1'); import reparam; \
+$PY -c "import numpy as np,sys; sys.path.insert(0,'$HOME/pi0eta_ampmodel_fit'); import reparam; \
 np.save('$HOME/exclurad_py/exclurad_py/models/amp2026s_par.npy', reparam.to_old(np.load('$PAR')))"
 cd ~/exclurad_py
 $PY - <<'PY'
@@ -29,7 +29,7 @@ block = '''
 #   curvature cannot reverse the fall inside the validity window.
 # Cost: chi2 1083.7 -> 1108.1 (chi2/ndf 1.5504 -> 1.5853) for zero new parameters,
 # and all of it sits in eta sigma_U at -t > 1.2; inside -t <= 1.2 the ordering
-# costs 6 chi2 on 513 points.  See ~/rc_iter1/README.md.
+# costs 6 chi2 on 513 points.  See ~/pi0eta_ampmodel_fit/README.md.
 #
 # Use amp2026s for production.  amp2026 is kept frozen because the OneDrive
 # generator baseline (Work/2026_pi0_amplitudes/generator/) was produced with it.
@@ -39,7 +39,7 @@ _AMP26S_PROV = (
     "Slope-constrained refit of the amp2026 fixed point: form factors required "
     "to fall with |t| over xB in [0.1, 0.6], H_T^d at least as steep as H_T^u, "
     "Ebar_T curvature not reversing the fall inside -t <= 2.5. "
-    "See ~/rc_iter1/README.md. ")
+    "See ~/pi0eta_ampmodel_fit/README.md. ")
 
 
 def _amp26s_sfs(channel, t_nucl, xB, Q2):

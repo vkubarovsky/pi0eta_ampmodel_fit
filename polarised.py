@@ -101,7 +101,7 @@ def vectors(p, out="data/polarised_reference.data"):
                         + [bracket(s, eps, phi, h, lam)
                            for h, lam in ((0, 0), (1, 0), (0, 1), (1, 1), (1, -1))])
     hdr = ("Reference values for the polarised-target bracket, model amp2609 =\n"
-           "rc_iter1 run C1_with_compass, proton target, pi0, Ebeam 10.6 GeV.\n"
+           "pi0eta_ampmodel_fit run C1_with_compass, proton target, pi0, Ebeam 10.6 GeV.\n"
            "Structure functions in nb/GeV^2; the bracket in the same units.\n"
            "columns:\n"
            "  Q2 xB -t eps phi[deg] " + " ".join(KEYS) + "\n"

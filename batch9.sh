@@ -3,7 +3,7 @@
 # above Q2 = 4.3, so this is the first series in which the Q2 lever arm is not
 # an extrapolation.
 set -e
-cd /Users/vpk/rc_iter1
+cd /Users/vpk/pi0eta_ampmodel_fit
 ALL="bsa_clas12,bsa_demasi_phi,bsa_zhao,clas6_eta,clas6_pi0,eg1,halla_n,halla_y11,halla_y16,halla_y21"
 SEED=runs/A0_with_y21/fitpar.npy
 PY=~/.venv/bin/python3

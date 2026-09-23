@@ -335,8 +335,8 @@ except Exception:
     _sha = "unknown"
 PROV = pd.DataFrame([
  dict(field="built",       value=datetime.date.today().isoformat()),
- dict(field="built_by",    value="rc_iter1/build_database.py"),
- dict(field="rc_iter1_commit", value=_sha),
+ dict(field="built_by",    value="pi0eta_ampmodel_fit/build_database.py"),
+ dict(field="pi0eta_ampmodel_fit_commit", value=_sha),
  dict(field="sheets",      value="datasets, cross_sections, asymmetries, bsa_phi, theory"),
  dict(field="rows",        value=f"{len(X)} cross sections, {len(Aa)} asymmetry moments, "
                                  f"{len(P)} phi points, {len(T)} theory"),

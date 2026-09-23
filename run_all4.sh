@@ -5,7 +5,7 @@
 # and HallA y21.
 set -u
 PY=~/.venv/bin/python3
-cd ~/rc_iter1
+cd ~/pi0eta_ampmodel_fit
 export TIE_BD=1
 BASE="clas6_pi0,clas6_eta,halla_n,halla_y16,halla_y11,bsa_demasi_phi,bsa_zhao,bsa_clas12,eg1"
 run () {

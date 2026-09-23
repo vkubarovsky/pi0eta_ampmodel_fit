@@ -9,7 +9,7 @@ import os, sys, time
 sys.path.insert(0, "/Users/vpk/gk_work/build")
 import gkpi0
 
-PREP = os.path.expanduser("~/rc_iter1/gkprep")
+PREP = os.path.expanduser("~/pi0eta_ampmodel_fit/gkprep")
 
 def switches():
     gkpi0.set_reaction(0)          # pi0 on the proton

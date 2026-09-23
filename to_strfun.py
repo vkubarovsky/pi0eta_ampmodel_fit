@@ -6,7 +6,7 @@ are preserved by construction of the correction)."""
 import sys
 import numpy as np
 ch, src, out = sys.argv[1], sys.argv[2], sys.argv[3]
-pub = np.loadtxt(f"/Users/vpk/pi0_eta_amplitude_model/data/strfun_{ch}.data")
+pub = np.loadtxt(f"/Users/vpk/pi0eta_ampmodel_v0/data/strfun_{ch}.data")
 n = np.loadtxt(src)
 rows = []
 for row in n:

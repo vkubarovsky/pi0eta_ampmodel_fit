@@ -2,7 +2,7 @@
 # Series 8: leave-one-out on the corrected data (De Masi and Hall-A systematics
 # from the papers, normalisation nuisances, phase bounds repaired).
 set -e
-cd /Users/vpk/rc_iter1
+cd /Users/vpk/pi0eta_ampmodel_fit
 ALL="bsa_clas12,bsa_demasi_phi,bsa_zhao,clas6_eta,clas6_pi0,eg1,halla_n,halla_y11,halla_y16"
 SEED=runs/83_systtrue/fitpar.npy
 PY=~/.venv/bin/python3

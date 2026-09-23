@@ -51,7 +51,7 @@ if __name__ == "__main__":
     ratio = a[:, 5] / a[:, 4]
     a = np.column_stack([a, ratio])
     good = np.isfinite(ratio)
-    np.savetxt(f"/Users/vpk/rc_iter1/rc_{CH}.txt", a,
+    np.savetxt(f"/Users/vpk/pi0eta_ampmodel_fit/rc_{CH}.txt", a,
                header="q2 xb t phi eta_pub eta_new r=eta_new/eta_pub",
                fmt="%9.4f %8.4f %7.3f %8.2f %10.5f %10.5f %9.5f")
     print(f"{CH}: {good.sum()}/{len(a)} finite; "

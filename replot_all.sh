@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ~/rc_iter1
+cd ~/pi0eta_ampmodel_fit
 for d in runs/*/; do
   t=$(basename "$d")
   [ -f "$d/fitpar.npy" ] || continue
