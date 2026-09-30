@@ -20,8 +20,15 @@ BSLOT = [1, 5, 9, 14, 16, 38]
 # Slots 37-42 are the Htilde block added 2026-09-30 (see amplitudes._htilde).
 # Before it, sigma_L vanished linearly in t' at the forward peak because BOTH
 # longitudinal amplitudes carried sqrt(-t').  Slot 25 (rho_nf) is dead now.
-NPAR = 43
+# NPAR=37 drops the Htilde slots altogether and puts amplitudes.py back on the
+# old code path (T00p = rho_nf*|T00m|).  It exists so that the old model can be
+# refitted with exactly the same machinery and effort as the new one: this chi2
+# surface has many local minima, and comparing a fresh fit against an older
+# published number would not be a fair test of the Htilde block.
+NPAR  = int(os.environ.get("NPAR", "43"))
 XIPOW = float(os.environ.get("XIPOW", "0"))   # power of xi in front of <Etilde>
+if NPAR <= 37:
+    del BL["Htil"]; BSLOT.remove(38)
 TIES = {7: 3, 27: 11, 6: 2, 12: 10}
 # b of H_T^d tied to b of H_T^u.  Left free, the fit runs it to whatever ceiling
 # it is given -- 12, 18, 25 -- and buys 2 units of chi2 over 896 points, while
@@ -32,7 +39,7 @@ if os.environ.get("TIE_BD", "1") == "1": TIES[5] = 1
 # eight times steeper than b_u and is held by four neutron points alone, which
 # is what H_T's flat valley looked like before b_d was tied to b_u.
 if os.environ.get("TIE_BET", "0") == "1": TIES[14] = 9
-FROZEN = {23, 25, 28, 29, 30, 31, 32, 33, 42}
+FROZEN = {23, 28, 29, 30, 31, 32, 33} | ({25, 42} if NPAR > 37 else set())
 
 # Sets whose papers quote an overall normalisation uncertainty.  It multiplies
 # every point of the set together, so it cannot go into the per-point errors:
@@ -64,10 +71,11 @@ def bounds():
         LO[i] = 0.0
         HI[i] = BMAX          # 12 was inherited from a generic bounds array, not chosen
     if BDMAX is not None: HI[5] = float(BDMAX)
-    return LO, HI
+    return LO[:NPAR], HI[:NPAR]
 
 def expand(x):
-    p = np.zeros(NPAR); p[FREE] = x; p[23] = 0.0; p[42] = XIPOW
+    p = np.zeros(NPAR); p[FREE] = x; p[23] = 0.0
+    if NPAR > 42: p[42] = XIPOW
     for t, s in TIES.items(): p[t] = p[s]
     return p
 
@@ -93,7 +101,7 @@ def fit(keys, seeds=("fitpar_production_pub.npy", "fitpar_n_n_and_p.npy")):
         z = np.load(src)
         for jitter in (0.0, 0.05):
             q = np.zeros(NPAR); q[:min(len(z), NPAR)] = z[:NPAR]
-            if q[37] == 0.0:
+            if NPAR > 41 and q[37] == 0.0:
                 # A 37-slot seed has no Htilde.  Start it with the shape of the
                 # Etilde block (same slopes, same Q2 power, same d/u ratio) and
                 # half its normalisation; starting at exactly zero would leave

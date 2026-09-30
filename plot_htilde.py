@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 import amplitudes as A
 
 XB, Q2, CH = 0.2, 2.5, "pi0p"
-RUNS = [("runs/C1_with_compass/fitpar.npy", "no $\\tilde H$ (old)", "0.45", "--"),
-        ("runs/Htil_xi0_rs/fitpar.npy",        "with $\\tilde H$",     "C3", "-"),
-        ("runs/Htil_xi1_rs/fitpar.npy",        "with $\\tilde H$, explicit $\\xi$", "C0", "-.")]
+RUNS = [("runs/old_ctl1/fitpar.npy", "no $\\tilde H$ (old)", "0.45", "--"),
+        ("runs/Htil_xi0_rs/fitpar.npy",        "with $\\tilde H$, $n_x=0$",     "C3", "-"),
+        ("runs/Htil_free2/fitpar.npy",        "with $\\tilde H$, explicit $\\xi$ (converged)", "C0", "-.")]
 
 tmin = A.tmin(A.Mpi0, Q2, XB)
 tp = np.concatenate([np.linspace(0.0005, 0.05, 60), np.linspace(0.05, 1.2, 140)])

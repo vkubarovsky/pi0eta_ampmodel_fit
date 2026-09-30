@@ -1,40 +1,34 @@
-"""chi2 profile in N_Htilde (slot 37): everything else refitted at each fixed
-value.  This is the only honest statement about how well the data pin down
-sigma_L at the forward peak, where there is no sigma_L measurement at all and
-the longitudinal sector enters only through eps*sigma_L in sigma_U and through
-the interference terms sigma_LT, sigma_LT'."""
+"""One continuation chain of the chi2 profile in N_Htilde (slot 37).
+
+    XIPOW=1 python3 scan_htilde.py <seed.npy> <N1,N2,...in walk order> <outdir>
+
+Each node is refitted with slot 37 held fixed and seeded from the PREVIOUS
+node's solution as well as from the global seed.  A one-pass scan seeded from a
+single point was useless on this 29-parameter surface: nodes fell into different
+local minima, R_fwd came out non-monotone in N, and one node beat the free fit
+by 35 units.  Launch several overlapping chains in both directions and merge
+with merge_scan.py, which keeps the lowest chi2 found at each node.
+"""
 import json, os, sys, numpy as np
 import fitrun as R, amplitudes as A
 
 KEYS = ("bsa_clas12,bsa_demasi_phi,bsa_zhao,clas6_eta,clas6_pi0,compass,eg1,"
         "halla_n,halla_y11,halla_y16,halla_y21").split(",")
-SEED = sys.argv[1]
-GRID = [float(v) for v in sys.argv[2].split(",")]
+SEED, GRID, OUT = sys.argv[1], [float(v) for v in sys.argv[2].split(",")], sys.argv[3]
+os.makedirs(OUT, exist_ok=True)
 
 R.FROZEN = R.FROZEN | {37}
 R.FREE = [i for i in range(R.NPAR) if i not in set(R.TIES) | R.FROZEN]
-_expand = R.expand
-FIXED = [0.0]
-def expand(x):
-    p = _expand(x); p[37] = FIXED[0]; return p
-R.expand = expand
+_expand, FIXED = R.expand, [0.0]
+R.expand = lambda x: (lambda p: (p.__setitem__(37, FIXED[0]), p)[1])(_expand(x))
 
-tmin = A.tmin(A.Mpi0, 2.5, 0.2)
-out = []
+tmin, prev = A.tmin(A.Mpi0, 2.5, 0.2), SEED
 for v in GRID:
     FIXED[0] = v
-    p, lam = R.fit(KEYS, seeds=(SEED,))
-    rec = R.summarise(p, KEYS, f"scanHt_{v}", lam)
+    p, lam = R.fit(KEYS, seeds=tuple(s for s in (prev, SEED) if os.path.exists(s)))
+    rec = R.summarise(p, KEYS, f"N{v:g}", lam)
+    np.save(f"{OUT}/fitpar_N{v:g}.npy", p)
+    json.dump(rec, open(f"{OUT}/summary_N{v:g}.json", "w"), indent=1)
     s0 = A.structure(p, "pi0p", tmin - 0.002, 0.2, 2.5)
-    s3 = A.structure(p, "pi0p", tmin - 0.3,   0.2, 2.5)
-    row = dict(N=v, chi2=rec["chi2_fitted"], ndf=rec["ndf"],
-               sigL0=s0["L"], R0=s0["L"]/s0["T"], R3=s3["L"]/s3["T"])
-    out.append(row)
-    print(f"N_Htil={v:7.3f}  chi2={row['chi2']:9.2f}  "
-          f"sigL(-t'=0.002)={row['sigL0']:8.3f}  R_fwd={row['R0']:7.4f}  R(0.3)={row['R3']:7.4f}",
-          flush=True)
-json.dump(out, open("runs/scan_htilde.json", "w"), indent=1)
-c = min(r["chi2"] for r in out)
-print("\nchi2_min =", round(c, 2), " -> Delta chi2 = 1 window:")
-for r in out:
-    print(f"  N={r['N']:7.3f}  dchi2={r['chi2']-c:8.2f}  R_fwd={r['R0']:7.4f}")
+    print(f"N={v:7.3f} chi2={rec['chi2_fitted']:9.2f} R_fwd={s0['L']/s0['T']:7.4f}", flush=True)
+    prev = f"{OUT}/fitpar_N{v:g}.npy"

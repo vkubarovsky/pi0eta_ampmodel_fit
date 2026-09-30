@@ -10,7 +10,7 @@ p, lam = R.fit(keys, seeds=seeds)
 out = f"runs/{tag}"; os.makedirs(out, exist_ok=True)
 np.save(f"{out}/fitpar.npy", p)
 rec = R.summarise(p, keys, tag, lam)
-rec["xipow"] = R.XIPOW; rec["seeds"] = list(seeds)
+rec["xipow"] = R.XIPOW; rec["npar_slots"] = R.NPAR; rec["seeds"] = list(seeds)
 json.dump(rec, open(f"{out}/summary.json", "w"), indent=1)
-print(tag, "XIPOW", R.XIPOW, "chi2", round(rec["chi2_fitted"], 1),
+print(tag, "NPAR", R.NPAR, "XIPOW", R.XIPOW, "chi2", round(rec["chi2_fitted"], 1),
       "chi2/ndf", round(rec["chi2_ndf"], 4))
