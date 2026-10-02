@@ -1,0 +1,3 @@
+channel: etan   box Q2 1-6, W >= 1.8, -t' 0.005-2.0, h and lam = +-1
+  no H~     min B/sigma0 = +0.000615   at Q2=6.000 xB=0.3070 -t'=0.2962 h=-1 lam=+1   (grid cells 37500, negative on grid 0)
+  with H~   min B/sigma0 = +0.000204   at Q2=6.000 xB=0.3088 -t'=0.0020 h=-1 lam=+1   (grid cells 37500, negative on grid 0)
