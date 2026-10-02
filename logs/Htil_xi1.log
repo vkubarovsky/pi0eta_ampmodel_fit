@@ -1,0 +1,18 @@
+De Masi: 56 of 62 points are above threshold
+=== Htil_xi1: chi2/ndf = 1.4023 (2135.6/1523)
+   norm   bsa_demasi_phi = 1.0752  (+2.15 sigma)
+   norm          halla_n = 0.9667  (-1.07 sigma)
+   norm        halla_y16 = 1.1019  (+3.27 sigma)
+   fit    clas6_pi0:     493.1/288     1.71
+   fit    clas6_eta:     202.6/207     0.98
+   fit      halla_n:      29.3/12      2.44
+   fit    halla_y16:     104.3/21      4.96
+   fit    halla_y11:     138.8/112     1.24
+   fit    halla_y21:     332.0/144     2.31
+          clas12_xs:    5486.3/438    12.53
+   fit      compass:      75.6/26      2.91
+         bsa_demasi:      87.3/56      1.56
+   fit     bsa_zhao:      19.2/12      1.60
+   fit   bsa_clas12:      37.9/30      1.26
+   fit bsa_demasi_phi:     622.1/663     0.94
+   fit          eg1:      64.2/40      1.60

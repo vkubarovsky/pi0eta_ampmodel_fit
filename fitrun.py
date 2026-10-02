@@ -15,8 +15,20 @@ W = 30.0
 BMAX  = float(os.environ.get("BMAX", "12"))    # ceiling on the slope at xB = 1
 BDMAX = os.environ.get("BDMAX")                # separate ceiling for b of H_T^d
 BL = {"H_T^u": (1, 2), "H_T^d": (5, 6), "Ebar_T^u": (9, 10), "Ebar_T^d": (14, 12),
-      "T00": (16, 21)}
-BSLOT = [1, 5, 9, 14, 16]
+      "T00": (16, 21), "Htil": (38, 39)}
+BSLOT = [1, 5, 9, 14, 16, 38]
+# Slots 37-42 are the Htilde block added 2026-09-30 (see amplitudes._htilde).
+# Before it, sigma_L vanished linearly in t' at the forward peak because BOTH
+# longitudinal amplitudes carried sqrt(-t').  Slot 25 (rho_nf) is dead now.
+# NPAR=37 drops the Htilde slots altogether and puts amplitudes.py back on the
+# old code path (T00p = rho_nf*|T00m|).  It exists so that the old model can be
+# refitted with exactly the same machinery and effort as the new one: this chi2
+# surface has many local minima, and comparing a fresh fit against an older
+# published number would not be a fair test of the Htilde block.
+NPAR  = int(os.environ.get("NPAR", "43"))
+XIPOW = float(os.environ.get("XIPOW", "0"))   # power of xi in front of <Etilde>
+if NPAR <= 37:
+    del BL["Htil"]; BSLOT.remove(38)
 TIES = {7: 3, 27: 11, 6: 2, 12: 10}
 # b of H_T^d tied to b of H_T^u.  Left free, the fit runs it to whatever ceiling
 # it is given -- 12, 18, 25 -- and buys 2 units of chi2 over 896 points, while
@@ -27,7 +39,7 @@ if os.environ.get("TIE_BD", "1") == "1": TIES[5] = 1
 # eight times steeper than b_u and is held by four neutron points alone, which
 # is what H_T's flat valley looked like before b_d was tied to b_u.
 if os.environ.get("TIE_BET", "0") == "1": TIES[14] = 9
-FROZEN = {23, 28, 29, 30, 31, 32, 33}
+FROZEN = {23, 28, 29, 30, 31, 32, 33} | ({25, 42} if NPAR > 37 else set())
 
 # Sets whose papers quote an overall normalisation uncertainty.  It multiplies
 # every point of the set together, so it cannot go into the per-point errors:
@@ -37,7 +49,7 @@ FROZEN = {23, 28, 29, 30, 31, 32, 33}
 #   halla_n         3.1%   Mazouz PRL 118 222002 p.4, the same table
 NORMS = {"bsa_demasi_phi": 0.035, "halla_y16": 0.0312, "halla_n": 0.031}
 LAM_LO, LAM_HI = 0.7, 1.3
-FREE = [i for i in range(37) if i not in set(TIES) | FROZEN]
+FREE = [i for i in range(NPAR) if i not in set(TIES) | FROZEN]
 
 def slopes(p, x):
     L = math.log(x)
@@ -49,18 +61,21 @@ def bounds():
     # kept its old window [0.5, 2.0] after the slots were reused, which pinned both
     # phases at 0.5 and also made the computed-phase branch (p[35] <= -9) of
     # amplitudes.py unreachable.
-    LO = np.array(list(F.LO) + [-12., -5., -5., -5., -5., -math.pi, -math.pi, -math.pi, -math.pi, -math.pi])
-    HI = np.array(list(F.HI) + [12., 5., 8., 5., 8., math.pi, math.pi, math.pi, math.pi, math.pi])
+    LO = np.array(list(F.LO) + [-12., -5., -5., -5., -5., -math.pi, -math.pi, -math.pi, -math.pi, -math.pi]
+                  + [0., 0., -5., -12., -10., 0.])          # 37-42: the Htilde block
+    HI = np.array(list(F.HI) + [12., 5., 8., 5., 8., math.pi, math.pi, math.pi, math.pi, math.pi]
+                  + [1e4, 12., 8., 12., 10., 1.])
     LO[3] = LO[11] = LO[17] = -12.; HI[3] = HI[11] = HI[17] = 12.
     LO[12] = -8.; HI[12] = 8.; LO[13] = -1e4; HI[13] = 1e4; LO[14] = -2.; HI[14] = 12.
     for i in BSLOT:
         LO[i] = 0.0
         HI[i] = BMAX          # 12 was inherited from a generic bounds array, not chosen
     if BDMAX is not None: HI[5] = float(BDMAX)
-    return LO, HI
+    return LO[:NPAR], HI[:NPAR]
 
 def expand(x):
-    p = np.zeros(37); p[FREE] = x; p[23] = 0.0
+    p = np.zeros(NPAR); p[FREE] = x; p[23] = 0.0
+    if NPAR > 42: p[42] = XIPOW
     for t, s in TIES.items(): p[t] = p[s]
     return p
 
@@ -85,10 +100,16 @@ def fit(keys, seeds=("fitpar_production_pub.npy", "fitpar_n_n_and_p.npy")):
         if not os.path.exists(src): continue
         z = np.load(src)
         for jitter in (0.0, 0.05):
-            q = np.zeros(37); q[:len(z)] = z
+            q = np.zeros(NPAR); q[:min(len(z), NPAR)] = z[:NPAR]
+            if NPAR > 41 and q[37] == 0.0:
+                # A 37-slot seed has no Htilde.  Start it with the shape of the
+                # Etilde block (same slopes, same Q2 power, same d/u ratio) and
+                # half its normalisation; starting at exactly zero would leave
+                # least_squares with no gradient along the new directions.
+                q[37], q[38], q[39], q[40], q[41] = 0.5*q[15], q[16], q[21], q[17], q[18]
             if jitter:
                 rng = np.random.default_rng(len(keys))
-                q = q*(1 + jitter*rng.standard_normal(37))
+                q = q*(1 + jitter*rng.standard_normal(NPAR))
             for t, s in TIES.items(): q[t] = q[s]
             q = np.clip(q, LO, HI)
             x0 = np.concatenate([q[FREE], np.ones(len(nn))])
@@ -126,7 +147,14 @@ def summarise(p, keys, tag, lam=None):
     sn = amp.structure(p, "pi0n", -0.27, 0.36, 1.75)
     st = amp.structure(p, "pi0p", -0.4, 0.25, 1.94)
     rec["slopes_xB025"] = {k: float(v) for k, v in s25.items()}
-    rec["phases"] = dict(H_T=float(p[34]), Ebar_T=float(p[35]), T00=float(p[36]))
+    rec["phases"] = dict(H_T=float(p[34]), Ebar_T=float(p[35]), T00=float(p[36]),
+                         Htil=float(p[26]))
+    # the forward limit of sigma_L: the whole point of the Htilde block
+    fw = [amp.structure(p, "pi0p", amp.tmin(amp.Mpi0, 2.5, 0.2) - d, 0.2, 2.5)
+          for d in (0.002, 0.3)]
+    rec["sigL_forward"] = dict(tp0002=float(fw[0]["L"]), tp03=float(fw[1]["L"]),
+                              R_tp0002=float(fw[0]["L"]/fw[0]["T"]),
+                              R_tp03=float(fw[1]["L"]/fw[1]["T"]))
     rec["ratios"] = dict(du_HT=float(abs(HT[1])/HT[0]*np.sign(np.real(HT[1]))),
                          du_ET=float(abs(ET[1])/ET[0]),
                          n_over_p=float(sn["TT"]/sp["TT"]),
