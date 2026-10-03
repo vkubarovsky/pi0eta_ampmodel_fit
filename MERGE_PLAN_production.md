@@ -117,10 +117,48 @@ Expected changes, already measured on the model side (`generator_impact.py`):
 
 ---
 
-## Stage 6 — pilot, then campaign.
+## Stage 6 — the full chain, on a pilot.  ~1 day, mostly farm.
 
-~100 k events per channel first, compared against Stage 5's predictions, before
-anything at production scale.
+**Nothing above leaves the generator.**  Stages 2-5 all compare numbers to
+numbers; none of them would catch a LUND the simulation chokes on, an event with
+a NaN or an out-of-range kinematic that only shows up downstream, or a change in
+what survives reconstruction.  The chain has to be run end to end before the
+campaign, not after it.
+
+    LUND -> gemc 5.13 -> coatjava 10.0.7 -> hipo -> hipo_to_ntuple.groovy -> gen_vs_rec
+
+Configuration as in `docs/PRODUCTIONS.md`: `rga_fall2018`, torus -1.00, no
+background merged for the pilot.  Recipe and its traps: `docs/gemc_howto.pdf`.
+Tools already exist in `production/gemc_check/`: `gen_vs_rec.py`,
+`hipo_to_ntuple.groovy`, `plot_kinematics.py`, `boundaries.py`.
+
+~100 k events per channel, **old tag and new tag through the identical chain and
+the same seed**, so the comparison is of the models and not of the simulation.
+
+| what to look at | why it matters here |
+|---|---|
+| job completion, zero crashes, event counts in == out | the only check that the new LUND is digestible at all |
+| generated spectra, new vs old | must reproduce `generator_impact.py`: ~1 % for pi0 p, 9-16 % for eta p, up to x2 for pi0 n |
+| **accepted** spectra and the accepted fraction | the point.  Acceptance is strongly t' and Q^2 dependent, so even a 1 % change in the generated t' spectrum does not stay 1 % after reconstruction |
+| `gen_vs_rec` resolutions and pulls | unchanged — the model must not touch these; if they move, something else is wrong |
+| missing-mass and exclusivity distributions | the cuts the analysis will apply |
+
+**Known issue to settle first:** `docs/PRODUCTIONS.md` line 164 records that
+`hipo_to_ntuple.groovy` must be fixed before the next run (hadron selection).
+Fix or confirm it is fixed before the pilot, or the comparison is against a
+broken ntuple.
+
+**Acceptance:** no crashes, in == out, resolutions unchanged, and the accepted
+spectra differing from the old tag by what Stage 5 predicted and no more.  A
+difference the model does not explain stops the campaign.
+
+---
+
+## Stage 7 — campaign.
+
+Only after Stage 6.  Scale, boxes and polarisation split to be decided then;
+the September layout (`/Volumes/wd_14tb/exclurad_py/amp2609/`, 89.8 M events,
+manifests per box) is the pattern to follow, under a new tag directory.
 
 ---
 
