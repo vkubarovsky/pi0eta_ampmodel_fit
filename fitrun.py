@@ -39,6 +39,34 @@ if os.environ.get("TIE_BD", "1") == "1": TIES[5] = 1
 # eight times steeper than b_u and is held by four neutron points alone, which
 # is what H_T's flat valley looked like before b_d was tied to b_u.
 if os.environ.get("TIE_BET", "0") == "1": TIES[14] = 9
+# TIE_ELB: b' of <Etilde> tied to b' of <Htilde>.  Htilde and Etilde are the two
+# twist-2 longitudinal GPDs and already share one u-d relative phase (p[36]);
+# tying their Regge alpha' is a statement of the same kind.  The reason it is
+# needed: free, b'(Etilde) came out -0.30 against -1.0 to -1.2 for every other
+# block, so past the fitted |t| = 1.8 sigma_L stops falling.  That is invisible
+# in the fit -- there is no data there -- but the radiative integral spends 20 %
+# of its evaluations beyond |t| = 1.8 and reaches |t| = 14.6, where it made eta
+# blow up to 2.6e9 against 36 for amp2609.  See exclurad_py NOTE_amp2610_sampler.
+if os.environ.get("TIE_ELB", "0") == "1": TIES[21] = 39
+# TIE_EQ: the WHOLE shape of <Etilde> tied to <Htilde> -- both b' (slot 21) and
+# nQ (slot 17) -- leaving <Etilde> its own normalisation and d/u ratio only.
+#
+# Why.  Once Htilde took over the forward region, nothing held Etilde's shape:
+# its nQ went +0.394 -> -0.285, i.e. the block started GROWING as Q2 -> 0, and
+# its normalisation went 35.8 -> 153.9.  Neither is visible in the fit -- at
+# Q2 = 2.5 the Etilde piece of T00p is 1.5 against Htilde's 3.8 -- but the
+# radiative integral reaches Q2t = 0.084, where the same piece is 15990 against
+# 176, ninety times the Htilde term, and eta came out 1e9 instead of 10.
+# The three factors behind it all sit in this block: xi^2/(1-xi^2) x33,
+# the normalisation x4.3, the nQ sign x2.3.
+#
+# NQ_FLOOR additionally forbids a negative nQ: a GFF that grows as Q2 -> 0 is
+# not something we want to extrapolate with, whatever chi2 says about it in a
+# region where it cannot be measured.
+if os.environ.get("TIE_EQ", "0") == "1":
+    TIES[21] = 39
+    TIES[17] = 40
+NQ_FLOOR = float(os.environ.get("NQ_FLOOR", "-99"))
 FROZEN = {23, 28, 29, 30, 31, 32, 33} | ({25, 42} if NPAR > 37 else set())
 
 # Sets whose papers quote an overall normalisation uncertainty.  It multiplies
@@ -67,6 +95,9 @@ def bounds():
                   + [1e4, 12., 8., 12., 10., 1.])
     LO[3] = LO[11] = LO[17] = -12.; HI[3] = HI[11] = HI[17] = 12.
     LO[12] = -8.; HI[12] = 8.; LO[13] = -1e4; HI[13] = 1e4; LO[14] = -2.; HI[14] = 12.
+    if NQ_FLOOR > -90:
+        for i in (3, 11, 17, 40):      # the nQ slots
+            LO[i] = max(LO[i], NQ_FLOOR)
     for i in BSLOT:
         LO[i] = 0.0
         HI[i] = BMAX          # 12 was inherited from a generic bounds array, not chosen
