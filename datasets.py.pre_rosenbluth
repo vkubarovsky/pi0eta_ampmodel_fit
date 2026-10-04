@@ -73,7 +73,6 @@ def _pred_xs(p, row, ch):
     if s is None: return None
     if obs == "U":   return s["T"] + eps*s["L"]
     if obs == "T":   return s["T"]
-    if obs == "L":   return s["L"]
     if obs == "LT":  return s["LT"]
     if obs == "TT":  return s["TT"]
     if obs == "LTp": return s["LTp"]
@@ -85,55 +84,16 @@ def _mk_xs(key, label, sel, meaning, ch, ebeam=None, obs=("U","LT","TT"), rc=Fal
     return dict(key=key, label=label, kind="xs", ch=ch, rows=rows,
                 predict=lambda p, r, ch=ch: _pred_xs(p, r, ch))
 
-def _mk_rosenbluth_p():
-    """Proton sigma_L, PRL 117 262001 -- the fourth separated structure function,
-    which never reached the workbook because All_experiment.xlsx has no column
-    for it.  Fitted alongside sigma_T with stat and sys added in quadrature; the
-    paper's warning that the two are anticorrelated cannot be honoured, the
-    covariance having been lost."""
-    import halla_rosenbluth as HR
-    rows = []
-    for Q2, tp, v, st, sy in HR.PROTON_SIGMA_L:
-        mt = abs(-amp.tmin(amp.Mpi0, Q2, 0.36) + tp)
-        e = math.hypot(st, sy)
-        rows.append((Q2, 0.36, mt, "L", v, e, float("nan"), "ha16_L_%.2f" % Q2))
-    return dict(key="halla_y16_L", kind="xs", ch="pi0p", rows=rows,
-                label="Hall-A proton, $\\sigma_L$ separated (2016)",
-                predict=lambda p, r, ch="pi0p": _pred_xs(p, r, ch))
-
-def _mk_rosenbluth_n():
-    """Neutron sigma_U at the two beam energies, PRL 118 222002 figure 4 -- the
-    measured quantity, in place of the derived sigma_T."""
-    import halla_rosenbluth as HR
-    rows = []
-    Q2, xB = HR.NEUTRON_Q2, HR.NEUTRON_XB
-    for i, (tp, u1, s1, u2, s2) in enumerate(HR.NEUTRON_SIGMA_U):
-        mt = abs(-amp.tmin(amp.Mpi0, Q2, xB) + tp)
-        for u, st, sy, E in ((u1, s1, HR.NEUTRON_SYS[i], HR.NEUTRON_EBEAM[0]),
-                             (u2, s2, HR.NEUTRON_SYS2[i], HR.NEUTRON_EBEAM[1])):
-            eps = amp.epsilon(xB, Q2, E)
-            rows.append((Q2, xB, mt, "U", u, math.hypot(st, sy), eps,
-                         "ha17_U_%.3f" % E))
-    return dict(key="halla_n_U", kind="xs", ch="pi0n", rows=rows,
-                label="Hall-A neutron, $\\sigma_U$ at two $\\epsilon$ (2017)",
-                predict=lambda p, r, ch="pi0n": _pred_xs(p, r, ch))
-
 C6 = XS[XS.exp == "CLAS6_y12"]
 SETS = [
   _mk_xs("clas6_pi0", "CLAS6 $\\pi^0$ structure functions",
          C6[C6.meson == "pi0"], "U", "pi0p", 5.75, rc=True),
   _mk_xs("clas6_eta", "CLAS6 $\\eta$ structure functions",
          C6[C6.meson == "eta"], "U", "etap", 5.75, rc=True),
-  # The neutron sigma_T is REPLACED by the two beam energies' sigma_U, which is
-  # what E07-007 measured; sigma_T is derived from them and is constructed to
-  # have the longitudinal part removed, so it cannot see sigma_L.  sigma_LT and
-  # sigma_TT keep their published values.  See halla_rosenbluth.py.
-  _mk_xs("halla_n", "Hall-A neutron, $\\sigma_{LT},\\sigma_{TT}$ (2017)",
-         XS[XS.exp == "HallA_y17"], "T", "pi0n", 5.55, obs=("LT","TT")),
-  _mk_rosenbluth_n(),
+  _mk_xs("halla_n", "Hall-A neutron, $\\sigma_T$ separated (2017)",
+         XS[XS.exp == "HallA_y17"], "T", "pi0n", 5.55),
   _mk_xs("halla_y16", "Hall-A proton, $\\sigma_T$ separated (2016)",
          XS[XS.exp == "HallA_y16"], "T", "pi0p", 5.55),
-  _mk_rosenbluth_p(),
   _mk_xs("halla_y11", "Hall-A proton 6 GeV (2011)",
          XS[XS.exp == "HallA_y11"], "U", "pi0p", 5.752, obs=("U","LT","TT","LTp"),
          ltscale=True),

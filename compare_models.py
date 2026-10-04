@@ -68,7 +68,7 @@ def page(pdf, key, obs, models, recs):
         if i % nc == 0: a.set_ylabel(OBSLAB.get(obs, obs), fontsize=9)
     fig.suptitle(f"{s['label']}   —   {OBSLAB.get(obs,obs)}\n"
                  f"no $\\tilde H$: $\\chi^2$={tot[0]:.1f}/{ntot}={tot[0]/max(ntot,1):.2f}"
-                 f"      with $\\tilde H$: $\\chi^2$={tot[1]:.1f}/{ntot}"
+                 f"      amp2612 (with $\\tilde H$): $\\chi^2$={tot[1]:.1f}/{ntot}"
                  f"={tot[1]/max(ntot,1):.2f}      $\\Delta={tot[1]-tot[0]:+.1f}$",
                  fontsize=11)
     fig.legend(handles=[plt.Line2D([], [], color=C_DAT, marker='o', ls='none', label='data'),
