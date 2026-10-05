@@ -10,7 +10,7 @@ Each entry of SETS is a dict with
     kind   "xs" or "asym"
 and a predict(p, row) that returns the model number for that row.
 """
-import json, math
+import json, math, os
 import numpy as np
 import pandas as pd
 import amplitudes as amp
@@ -211,36 +211,46 @@ for key, label, exp, ch, E in (
     SETS.append(dict(key=key, label=label, kind="asym", ch=ch, rows=rows,
                      predict=lambda p, r, ch=ch, E=E: _pred_bsa(p, r, ch, E)))
 
-# ---- De Masi at the phi level ------------------------------------------------
-# The CLAS database export gives the asymmetry as a function of phi in each of 60
-# bins, 703 points.  Fitting the model straight to those removes the intermediate
-# step: no choice between a plain sin fit and the full form, and the denominator
-# is supplied by the model's own sigma_LT and sigma_TT rather than assumed.
-# |A_LU| cannot exceed 1, so a point whose error is half that carries no
-# information about anything; 40 of the 703 are in that state, one with an error
-# of 576.  They cost nothing to keep -- together they hold 23.5 of the set's
-# chi2 -- but they inflate ndf, which flatters every chi2/ndf we quote.
-DM_ERRMAX = 0.5
+# ---- De Masi: the sin(phi) moment, extracted from the phi distributions -------
+# The paper publishes PLOTS, not a table.  The measurement is the phi
+# distribution in the CLAS database (sheet bsa_phi, 703 points / 60 bins); the
+# `asymmetries` sheet's 62 moment values were digitised from figure 5 and their
+# errors are 1.5x too small, so they are not fitted.
+#
+# Until 2026-10-05 the fit used the 703 phi points directly.  That was wrong in
+# one specific way: it counted 663 points (40 were cut for error > 0.5) while
+# carrying about SIXTY independent numbers, so De Masi supplied 42 % of the
+# fit's points and inflated every chi2/ndf we quoted.  Measured: scaling
+# sigma_LT in the denominator by 0, 2 or -1 moved chi2 by 0.4 to 3.1 units out
+# of 625, i.e. the phi shape beyond sin(phi) carries no information.
+#
+# The moment is extracted ONCE by demasi_moments.py, with the FULL asymmetry
+# form rather than a plain sin(phi) fit.  In 2008 the denominator was unknown;
+# today sigma_U and sigma_TT are measured at these kinematics (CLAS6 pi0, mean
+# pull -0.10 and +0.09), so the extracted number is the physical amplitude
+#     A = sqrt(2 eps (1-eps)) sigma_LT' / (sigma_T + eps sigma_L)
+# and not its projection onto sin(phi).  The two differ by 7.6 %.
+#
+# Model dependence of the extraction, measured: swapping amp2609's denominator
+# for the Htilde fit's moves A by a median 0.009 of the statistical error.
+#
+# Errors are STATISTICAL ONLY (VPK, 2026-10-05).  The published 0.016 covers
+# "event selection plus the choice of the fit function"; the second is removed
+# by construction, and a phi-independent first barely reaches the moment --
+# the leakage sum(w sin)/sum(w sin^2) has median 0.023, so 0.016 moves A by
+# 0.0004.  The 3.5 % beam polarisation stays as a fitted nuisance.
 _dmrows = []
-for _, _r in PH.iterrows():
-    _e = math.hypot(float(_r.stat),
-                    float(_r.syst) if np.isfinite(_r.syst) else 0.0)
-    if _e <= 0 or _e > DM_ERRMAX: continue
-    _dmrows.append((float(_r.Q2), float(_r.xB), abs(float(_r.t)), "A_phi",
-                    float(_r.value), _e,
-                    amp.epsilon(float(_r.xB), float(_r.Q2), 5.776), str(_r.bin),
-                    math.radians(float(_r.phi))))
-def _pred_dmphi(p, row):
-    Q2, xB, mt, _, _, _, e, _, phi = row
-    s = amp.structure(p, "pi0p", -mt, xB, Q2)
-    if s is None: return None
-    s0 = s["T"] + e*s["L"]
-    den = (1 + math.sqrt(2*e*(1+e))*s["LT"]/s0*math.cos(phi)
-             + e*s["TT"]/s0*math.cos(2*phi))
-    if abs(den) < 1e-6: return None
-    return math.sqrt(2*e*(1-e))*s["LTp"]/s0*math.sin(phi)/den
-SETS.append(dict(key="bsa_demasi_phi", label="CLAS6 $\\pi^0$ BSA, phi distributions",
-                 kind="asym", ch="pi0p", rows=_dmrows, predict=_pred_dmphi))
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                       "data", "demasi_moments.txt")) as _fh:
+    for _ln in _fh:
+        if _ln.startswith("#"): continue
+        _b, _q, _x, _t, _a, _e, _n = _ln.split()
+        _dmrows.append((float(_q), float(_x), float(_t), "A_LU^sinphi",
+                        float(_a), float(_e),
+                        amp.epsilon(float(_x), float(_q), 5.776), _b))
+SETS.append(dict(key="bsa_demasi_mom", kind="asym", ch="pi0p", rows=_dmrows,
+                 label="CLAS6 $\\pi^0$ BSA moment, from the $\\phi$ distributions",
+                 predict=lambda p, r: amp.bsa_sinphi(p, "pi0p", -r[2], r[1], r[0], 5.776)))
 
 MOM = {"A_UL^sinphi": "AULsin", "A_UL^sin2phi": "AULsin2",
        "A_LL^const": "ALLc", "A_LL^cosphi": "ALLcos"}

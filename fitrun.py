@@ -67,6 +67,20 @@ if os.environ.get("TIE_EQ", "0") == "1":
     TIES[21] = 39
     TIES[17] = 40
 NQ_FLOOR = float(os.environ.get("NQ_FLOOR", "-99"))
+# RET_FIX: force Ebar_T^d = RET_FIX * Ebar_T^u, i.e. fix the d/u ratio of the
+# twist-3 block that alone decides sigma_TT.  With TIE_BET=1 (b_d = b_u) and the
+# standing ties 12->10 (b'_d = b'_u) and 27->11 (nQ_d = nQ_u), the two GFFs then
+# differ by this one number at every t, Q2 and xB, so the neutron/proton ratio
+# of sigma_TT is |1+2r|^2/|2+r|^2 exactly.  Hall-A measures 0.28 +- 0.07, which
+# needs r = +0.04 or r = -0.81; the free fit sits at r ~ +1, next to GK's +0.71.
+# RTGT: a penalty that drags the neutron/proton ratio of sigma_TT at the Hall-A
+# point (Q2 = 1.75, xB = 0.36, |t| = 0.232) to a chosen value.  Not a data point
+# -- it double-counts the sigma_TT measurements already in the fit -- but a lever
+# with which to ask what obeying the published 0.28 +- 0.07 costs the rest.
+RTGT = os.environ.get("RTGT"); RTGT = float(RTGT) if RTGT else None
+RWID = float(os.environ.get("RWID", "0.02"))
+RET_FIX = os.environ.get("RET_FIX")
+PROP = {13: (8, float(RET_FIX))} if RET_FIX is not None else {}
 FROZEN = {23, 28, 29, 30, 31, 32, 33} | ({25, 42} if NPAR > 37 else set())
 
 # Sets whose papers quote an overall normalisation uncertainty.  It multiplies
@@ -75,9 +89,9 @@ FROZEN = {23, 28, 29, 30, 31, 32, 33} | ({25, 42} if NPAR > 37 else set())
 #   bsa_demasi_phi  3.5%   beam polarisation, De Masi PRC 77 042201(R) p.3
 #   halla_y16       3.12%  Defurne PRL 117 262001 table III
 #   halla_n         3.1%   Mazouz PRL 118 222002 p.4, the same table
-NORMS = {"bsa_demasi_phi": 0.035, "halla_y16": 0.0312, "halla_n": 0.031}
+NORMS = {"bsa_demasi_mom": 0.035, "halla_y16": 0.0312, "halla_n": 0.031}
 LAM_LO, LAM_HI = 0.7, 1.3
-FREE = [i for i in range(NPAR) if i not in set(TIES) | FROZEN]
+FREE = [i for i in range(NPAR) if i not in set(TIES) | FROZEN | set(PROP)]
 
 def slopes(p, x):
     L = math.log(x)
@@ -108,9 +122,14 @@ def expand(x):
     p = np.zeros(NPAR); p[FREE] = x; p[23] = 0.0
     if NPAR > 42: p[42] = XIPOW
     for t, s in TIES.items(): p[t] = p[s]
+    for t, (s, f) in PROP.items(): p[t] = f*p[s]
     return p
 
-def fit(keys, seeds=("fitpar_production_pub.npy", "fitpar_n_n_and_p.npy")):
+SEEDS = os.environ.get("SEEDS")
+def fit(keys, seeds=None):
+    if seeds is None:
+        seeds = tuple(SEEDS.split(",")) if SEEDS else \
+                ("fitpar_production_pub.npy", "fitpar_n_n_and_p.npy")
     LO, HI = bounds()
     nn = [k for k in keys if k in NORMS]      # normalised sets actually in this fit
     nf = len(FREE)
@@ -125,6 +144,11 @@ def fit(keys, seeds=("fitpar_production_pub.npy", "fitpar_n_n_and_p.npy")):
         for xx in (0.05, 0.35, 1.00):
             sl = slopes(p, xx)
             for n in BL: r.append(W*min(0.0, sl[n]))
+        if RTGT is not None:
+            sp_ = amp.structure(p, "pi0p", -0.232, 0.36, 1.75)
+            sn_ = amp.structure(p, "pi0n", -0.232, 0.36, 1.75)
+            r.append(((sn_["TT"]/sp_["TT"]) - RTGT)/RWID
+                     if sp_ and sn_ else 50.0)
         return np.array(r)
     best = None
     for src in seeds:
@@ -170,6 +194,7 @@ def summarise(p, keys, tag, lam=None):
         if k in used: cf += c; nf += n
     cf += sum(((v - 1.0)/NORMS[k])**2 for k, v in lam.items())   # the priors count
     rec["chi2_fitted"] = cf; rec["n_fitted"] = nf
+    if RTGT is not None: rec["rtgt"] = RTGT
     rec["ndf"] = nf - npar
     rec["chi2_ndf"] = cf/max(nf - npar, 1)
     s25 = slopes(p, 0.25)

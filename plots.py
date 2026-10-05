@@ -71,7 +71,7 @@ def panels(key, obs, p, fitted, out, ylog=False, scale=1.0):
         gl = str(g[0][7])
         xv, axlab = ([r[2] for r in g], r"$-t$  [GeV$^2$]")
         if gl == "compass_Q2": xv, axlab = ([r[0] for r in g], r"$Q^2$  [GeV$^2$]")
-        elif key == "bsa_demasi_phi":
+        elif key == "bsa_demasi_mom":
             xv, axlab = ([math.degrees(r[8]) for r in g], r"$\phi$  [deg]")
         elif gl == "compass_nu":
             xv, axlab = ([r[0]/(2*0.9382720813*r[1]) for r in g], r"$\nu$  [GeV]")
@@ -137,7 +137,7 @@ def summary_figure(rec, out):
                 f"dark red = in the fit,  orange = left out (blind prediction)", fontsize=11)
     fig.tight_layout(); fig.savefig(out, dpi=130); plt.close(fig)
 
-PLAN = [("bsa_demasi_phi", ("A_phi",)),
+PLAN = [("bsa_demasi_mom", ("A_LU^sinphi",)),
         ("clas6_pi0", ("U","LT","TT")), ("clas6_eta", ("U","LT","TT")),
         ("halla_n", ("LT","TT")), ("halla_n_U", ("U",)),
         ("halla_y16", ("T","LT","TT")), ("halla_y16_L", ("L",)),
