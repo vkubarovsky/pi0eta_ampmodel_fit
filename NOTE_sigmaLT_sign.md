@@ -132,6 +132,49 @@ negative.
 The claim worth making is the weak one: **no smooth model reaches these three
 points.**  Not that the measurements are wrong.
 
+## 5. What a refit cannot reach, and a success that was not one
+
+**Added 2026-10-05, from the GK side's full refit against the 60 moments.**
+
+Refitting all 16 GK parameters against the moments plus the cross sections and
+the Rosenbluth rows moves essentially nothing:
+
+| | |
+|---|---|
+| De Masi moments | 6.24 -> 5.84 per point |
+| total chi2 | 1872.97 -> 1846.13 (27 units of 1873) |
+| largest parameter shift | 0.231 sigma |
+| lambda (De Masi, 3.5 % prior) | **1.1190, +3.40 sigma** |
+
+Most of the 27 units came through `lambda`, not through the parameters.  Every
+other block is unchanged to two decimals.
+
+**Why no refit can help.**  With `Mpmp0 = Mppp0`, `sigma_LT'` is
+`|<Etilde>||<H_T>| sin(delta)` and nothing else.  `<Etilde>` is hard-coded.
+`|<H_T>|` is held by `sigma_T`, which the 96 CLAS6 `sigma_U` points and the rest
+of the cross sections pin.  `delta` is the frozen `<Etilde>` phase against the
+`<H_T>` phase.  **No free parameter touches that product.**  The fit has only
+the polarisation scale to move, and it is already 3.4 sigma out.
+
+**The lambda reading is three for three.**  A polarimetry nuisance at +3.4
+sigma is the fit talking about `sigma_LT'`, not about the polarimeter.  The
+same strain appears here at +1.1 sigma, and independently where `sigma_LT'` is
+measured DIRECTLY rather than in a ratio -- HallA_y11 and y21 mean pulls +0.25
+and +0.27 -- while `sigma_0` is unbiased (CLAS6 pi0 `sigma_U`, mean pull -0.10).
+The deficit is in the numerator.
+
+**And a general lesson, which is the part worth carrying.**  GK fits asymmetries
+ALONE at 1.03 per point and cannot fit them together with the cross sections.
+Fitted alone it rescales `<H_T>` freely -- asymmetries are ratios, so the
+overall scale cancels -- and lands on negative `kappa_T` for both flavours.
+Fitted together, `sigma_T` holds `<H_T>` and the asymmetries get whatever
+`<Etilde>` leaves them.  **The 1.03 was never a success**: it was a ratio set
+being fitted by a normalisation the ratio cannot see.
+
+The 703 phi points hid this at 1.34 per point; the 60 moments show it at 6.24,
+on the same measurement and the same physics.  The difference is the inflated
+ndf of section 0, not any change of data.
+
 ## Caveats carried forward
 
 * The GK sign flip is a hand diagnostic with the phase fixed and nothing
