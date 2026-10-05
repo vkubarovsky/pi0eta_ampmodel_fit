@@ -16,7 +16,7 @@ import amplitudes as amp, datasets as D
 # line -- the COMPASS panels, where it is a grid average and no curve is drawn.
 # Whether a set was fitted is still said in the title of every figure.
 C_IN, C_OUT, C_MOD = "#8c1d1d", "#c2621b", "#1a5fb4"
-OBSLAB = {"A_phi": r"$A_{LU}(\phi)$",
+OBSLAB = {"L": r"$\sigma_L$", "A_phi": r"$A_{LU}(\phi)$",
           "U": r"$\sigma_U=\sigma_T+\epsilon\sigma_L$", "T": r"$\sigma_T$",
           "LT": r"$\sigma_{LT}$", "TT": r"$\sigma_{TT}$", "LTp": r"$\sigma_{LT'}$",
           "A_LU^sinphi": r"$A_{LU}^{\sin\phi}$",
@@ -139,7 +139,8 @@ def summary_figure(rec, out):
 
 PLAN = [("bsa_demasi_phi", ("A_phi",)),
         ("clas6_pi0", ("U","LT","TT")), ("clas6_eta", ("U","LT","TT")),
-        ("halla_n", ("T","LT","TT")), ("halla_y16", ("T","LT","TT")),
+        ("halla_n", ("LT","TT")), ("halla_n_U", ("U",)),
+        ("halla_y16", ("T","LT","TT")), ("halla_y16_L", ("L",)),
         ("halla_y11", ("U","LT","TT","LTp")), ("halla_y21", ("U","LT","TT","LTp")),
         ("clas12_xs", ("U","LT","TT")), ("compass", ("U","TT")),
         ("bsa_demasi", ("A_LU^sinphi",)), ("bsa_zhao", ("A_LU^sinphi",)),
