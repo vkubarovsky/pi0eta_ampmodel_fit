@@ -201,8 +201,14 @@ def above_threshold(Q2, xB, mt, m=MPI):
     Ep = (W2 + m*m - MP*MP)/(2*W); pp = math.sqrt(max(Ep*Ep - m*m, 0.0))
     return mt > -(m*m - Q2 - 2*(Eg*Ep - pg*pp))
 
+# The digitised De Masi moments (CLAS6_demasi on the `asymmetries` sheet) were
+# dropped on 2026-10-05 (VPK).  They are figure 5 read off by eye: errors 1.5x
+# too small by the workbook's own note, bin labels instead of measured means,
+# and nine of the sixty measured bins missing.  The moment extracted from the
+# phi distributions supersedes them and reproduces them to a median 2.0 %,
+# which is the accuracy of reading a plot.  Keeping them as a "cross-check"
+# only invited the chart to show two bars with almost the same name.
 for key, label, exp, ch, E in (
-        ("bsa_demasi", "CLAS6 $\\pi^0$ beam-spin asymmetry", "CLAS6_demasi", "pi0p", 5.776),
         ("bsa_zhao",   "CLAS6 $\\eta$ beam-spin asymmetry",  "CLAS6_zhao",   "etap", 5.776),
         ("bsa_clas12", "CLAS12 $\\sigma_{LT'}/\\sigma_0$",   "CLAS12_y24",   "pi0p", 10.6)):
     m = MPI if ch == "pi0p" else 0.547862

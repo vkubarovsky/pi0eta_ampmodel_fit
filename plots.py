@@ -31,6 +31,11 @@ def cluster(rows, dq=0.25, dx=0.03):
     was built -- one label per (Q2, xB) setting -- so use it.  Only the
     asymmetries, which have no label, fall back on clustering by proximity."""
     lab = {r[7] for r in rows}
+    # The De Masi moment carries the phi-bin name in field 7, one row per bin,
+    # so the label grouping would give 60 single-point panels.  Fall through to
+    # the proximity clustering, as for every other asymmetry.
+    if lab and all(str(x).startswith("E25M") for x in lab):
+        lab = set()
     if lab and "all" not in lab:
         return [ [r for r in rows if r[7] == k]
                  for k in sorted(lab, key=lambda k: ([r for r in rows if r[7]==k][0][1],
@@ -71,8 +76,6 @@ def panels(key, obs, p, fitted, out, ylog=False, scale=1.0):
         gl = str(g[0][7])
         xv, axlab = ([r[2] for r in g], r"$-t$  [GeV$^2$]")
         if gl == "compass_Q2": xv, axlab = ([r[0] for r in g], r"$Q^2$  [GeV$^2$]")
-        elif key == "bsa_demasi_mom":
-            xv, axlab = ([math.degrees(r[8]) for r in g], r"$\phi$  [deg]")
         elif gl == "compass_nu":
             xv, axlab = ([r[0]/(2*0.9382720813*r[1]) for r in g], r"$\nu$  [GeV]")
         t = np.array(xv); v = np.array([r[4] for r in g])
@@ -118,17 +121,30 @@ def panels(key, obs, p, fitted, out, ylog=False, scale=1.0):
     fig.savefig(out, dpi=130); plt.close(fig)
     return tot, ntot
 
+# Two De Masi entries differ by four characters and sit side by side on the
+# summary bar chart, one orange and one dark red.  That is a trap: `bsa_demasi`
+# is the set DIGITISED from figure 5, deliberately left out, and
+# `bsa_demasi_mom` is the moment extracted from the phi distributions, which is
+# the one fitted.  Spell both out on the axis.
+SHORT = {"bsa_demasi_mom": "De Masi\n(moment)",
+         "halla_n":        "halla_n\n(LT, TT)",
+         "halla_n_U":      "halla_n\n($\\sigma_U$, 2 energies)",
+         "halla_y16":      "halla_y16\n(T, LT, TT)",
+         "halla_y16_L":    "halla_y16\n($\\sigma_L$ separated)"}
+
 def summary_figure(rec, out):
     ks = [k for k in D.ALL]
     v = [rec["sets"][k]["chi2"]/max(rec["sets"][k]["n"], 1) for k in ks]
     f = [rec["sets"][k]["fitted"] for k in ks]
-    fig, a = plt.subplots(figsize=(10, 4.6))
+    fig, a = plt.subplots(figsize=(11, 5.2))
     b = a.bar(range(len(ks)), v, color=[C_IN if x else C_OUT for x in f])
     for i, k in enumerate(ks):
         a.text(i, v[i], f" {rec['sets'][k]['chi2']:.0f}/{rec['sets'][k]['n']}",
                rotation=90, ha='center', va='bottom', fontsize=8)
     a.axhline(1, ls='--', lw=1, color='#666666')
-    a.set_xticks(range(len(ks))); a.set_xticklabels(ks, rotation=35, ha='right', fontsize=9)
+    a.set_xticks(range(len(ks)))
+    a.set_xticklabels([SHORT.get(k, k) for k in ks], rotation=35, ha='right',
+                      fontsize=8)
     a.set_ylabel(r"$\chi^2$ per point"); a.set_yscale('log')
     a.set_ylim(0.2, max(v)*3)
     a.grid(axis='y', alpha=.3, lw=.5)
@@ -143,7 +159,7 @@ PLAN = [("bsa_demasi_mom", ("A_LU^sinphi",)),
         ("halla_y16", ("T","LT","TT")), ("halla_y16_L", ("L",)),
         ("halla_y11", ("U","LT","TT","LTp")), ("halla_y21", ("U","LT","TT","LTp")),
         ("clas12_xs", ("U","LT","TT")), ("compass", ("U","TT")),
-        ("bsa_demasi", ("A_LU^sinphi",)), ("bsa_zhao", ("A_LU^sinphi",)),
+        ("bsa_zhao", ("A_LU^sinphi",)),
         ("bsa_clas12", ("sigma_LT'/sigma_0",)),
         ("eg1", ("AULsin","AULsin2","ALLc","ALLcos"))]
 ORDER = {k: i for i, (k, _) in enumerate(PLAN)}

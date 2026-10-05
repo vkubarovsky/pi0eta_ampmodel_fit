@@ -1,7 +1,7 @@
 """Generate every number in the report from the run, so nothing is transcribed."""
 import json, os, numpy as np, fitrun as R, datasets as D
 
-TAG = "C1_with_compass"
+TAG = os.environ.get("TAG", "Mom_B12")
 d = f"runs/{TAG}"
 p = np.load(f"{d}/fitpar.npy"); rec = json.load(open(f"{d}/summary.json"))
 keys = rec["fitted"]; lamd = rec["norms"]; nn = [k for k in keys if k in R.NORMS]
@@ -26,7 +26,7 @@ for i in range(len(x0)):
     h = 1e-6*max(abs(x0[i]), 1e-3); xp = x0.copy(); xp[i] += h
     J[:, i] = (resid(xp) - f0)/h
 err = np.sqrt(np.abs(np.diag(np.linalg.pinv(J.T @ J))))
-E = np.zeros(37)
+E = np.zeros(R.NPAR)
 for j, i in enumerate(R.FREE): E[i] = err[j]
 for t, s in R.TIES.items(): E[t] = E[s]
 LO, HI = R.bounds()
@@ -40,9 +40,14 @@ BLK = [("$\\langle H_T\\rangle^u$", 0, 1, 2, 3),
        ("$\\langle H_T\\rangle^d$", 4, 5, 6, 7),
        ("$\\langle \\bar E_T\\rangle^u$", 8, 9, 10, 11),
        ("$\\langle \\bar E_T\\rangle^d$", 13, 14, 12, 27),
-       ("$\\langle L\\rangle$", 15, 16, 21, 17)]
+       ("$\\langle \\tilde E\\rangle$", 15, 16, 21, 17)]
+if R.NPAR > 41:
+    BLK.append(("$\\langle \\tilde H\\rangle$", 37, 38, 39, 40))
 TIED = {5: "$=b_u$", 6: "$=b_u'$", 7: "$=n_{Q,u}$",
         12: "$=b_u'(\\bar E_T)$", 27: "$=n_{Q,u}(\\bar E_T)$"}
+# TIE_EQ: <Etilde>'s whole shape follows <Htilde>'s
+if 21 in R.TIES: TIED[21] = "$=b'(\\tilde H)$"
+if 17 in R.TIES: TIED[17] = "$=n_Q(\\tilde H)$"
 # Whole tabulars, not bodies: \input of a body inside a tabular puts
 # \bottomrule in the middle of a row.
 def table(fn, spec, head, rows):
@@ -80,7 +85,11 @@ LAB = {"clas6_pi0": "CLAS6 $\\pi^0$ p", "clas6_eta": "CLAS6 $\\eta$ p",
        "clas12_xs": "CLAS12 cross sections", "compass": "COMPASS 2025",
        "bsa_demasi": "De Masi, published $\\alpha$", "bsa_zhao": "Zhao, $\\eta$ BSA",
        "bsa_clas12": "CLAS12 $\\sigma_{LT'}/\\sigma_0$",
-       "bsa_demasi_phi": "De Masi, $A_{LU}(\\phi)$", "eg1": "eg1-dvcs, pol.\\ target"}
+       "bsa_demasi_phi": "De Masi, $A_{LU}(\\phi)$",
+       "bsa_demasi_mom": "De Masi, moment from $A_{LU}(\\phi)$",
+       "halla_n_U": "Hall A 2017, $\\sigma_U$ at two $\\epsilon$",
+       "halla_y16_L": "Hall A 2016, $\\sigma_L$ separated",
+       "eg1": "eg1-dvcs, pol.\\ target"}
 _sr = []
 for k in D.ALL:
     st = rec["sets"][k]

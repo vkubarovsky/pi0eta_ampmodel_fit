@@ -205,18 +205,55 @@ Writing $\xi = \frac{x_B}{2-x_B}\left(1 + M_p^2/Q^2\right)$,
 $t' = t - t_{\min}$ and $A = A(Q^2,x_B)$ for the phase-space factor,
 \begin{equation}
 D = \sqrt{2A\,(1-\xi^2)}\;\langle H_T\rangle_{\rm ch}, \qquad
-U_{01}^{(+)} = \sqrt{A\,\kappa}\;\langle \bar E_T\rangle_{\rm ch}, \qquad
-|T_{00}^{(-)}| = \sqrt{A\,\kappa}\;\langle L\rangle_{\rm ch},
+U_{01}^{(+)} = \sqrt{A\,\kappa}\;\langle \bar E_T\rangle_{\rm ch},
 \label{eq:amps}
 \end{equation}
 with $\kappa = -t'/(8M_p^2)$ and the subscript ``ch'' the channel combination
-of \eqref{eq:flavour}.  Four further parameters unlock what would otherwise be
-exact relations: $\rho_{CE}$ and $\phi_{CE}$ give $T_{01}^{(+)}$ a modulus and
-phase relative to $U_{01}^{(+)}$ (breaking $C = E$), $\phi_w$ is the phase of
-$U_{01}^{(+)}$, and $\rho_{nf}, \phi_{nf}$ give the longitudinal non-flip
-amplitude $T_{00}^{(+)}$, which vanishes at leading order.  The phase of
-$T_{00}^{(-)}$ is $\delta_0 + \delta_1 t$, common to both flavours -- note
-that this one phase is allowed a $t$-dependence, unlike $\varphi_X$.
+of \eqref{eq:flavour}.  Three parameters unlock what would otherwise be exact
+relations: $\rho_{CE}$ and $\phi_{CE}$ give $T_{01}^{(+)}$ a modulus and phase
+relative to $U_{01}^{(+)}$, breaking $C = E$, and $\phi_w$ is the phase of
+$U_{01}^{(+)}$.
+
+\paragraph{The longitudinal sector, corrected 30 September 2026.}
+\label{par:htilde}
+Until that date both longitudinal amplitudes carried $\sqrt{-t'}$, so
+$\sig{L} \propto -t' \to 0$ at the forward peak.  That contradicts the
+angular-momentum counting of the amplitude note: with
+$\Delta = \mu - \nu + \nu'$ the amplitude goes as $(\sqrt{-t'})^{|\Delta|}$,
+and the non-flip $M_{0+,0+}$ has $\Delta = 0$, so it must be
+\emph{constant} at $t' = 0$, not vanishing.  What was missing is
+$\langle\tilde H\rangle$.  In the GK dictionary
+\begin{equation}
+M_{0+,0+} \sim \sqrt{1-\xi^2}\,
+\Big[\langle\tilde H\rangle - \frac{\xi^2}{1-\xi^2}\langle\tilde E\rangle\Big],
+\qquad
+M_{0-,0+} \sim \frac{\sqrt{-t'}}{2M_p}\,\xi\,\langle\tilde E\rangle ,
+\label{eq:longi}
+\end{equation}
+so the old longitudinal block is re-read as $\langle\tilde E\rangle$ and
+$\langle\tilde H\rangle$ is new: four parameters $N, b, b', n_Q$ and one $d/u$
+ratio, with the $u$--$d$ relative phase shared with $\langle\tilde E\rangle$.
+
+Two guards were needed and are part of the model.  First, $\xi \ge 1$ is
+outside GPD support and the $\xi^2/(1-\xi^2)$ pole is not a physical
+enhancement: a point with $\xi \ge \xi_{\max} = 0.8$ is rejected rather than
+clamped.  All fitted data have $\xi \le 0.486$.  Second, the shape of
+$\langle\tilde E\rangle$ is \emph{tied} to that of $\langle\tilde H\rangle$ ---
+both $b'$ and $n_Q$ --- leaving it its own normalisation and $d/u$ ratio.  Left
+free it drifted where no data holds it: $n_Q$ turned negative, so the block grew
+as $Q^2 \to 0$, and the normalisation rose fourfold.  Neither is visible in
+$\chi^2$, because in the fitted region the $\langle\tilde E\rangle$ piece of
+$T_{00}^{(+)}$ is $1.5$ against $\langle\tilde H\rangle$'s $3.8$; but the
+radiative integral of the generator reaches $Q^2_t = 0.084$, where the same
+piece is $15990$ against $176$, and the correction factor came out $10^9$
+instead of $10$.  A fit cannot see a region it has no data in, and a generator
+must survive it.
+
+The phase of $\langle\tilde E\rangle$ is $\delta_0 + \delta_1 t$, common to
+both flavours --- this one phase is allowed a $t$-dependence, unlike
+$\varphi_X$ --- and $\langle\tilde H\rangle$ carries its own constant phase
+$\phi_{nf}$.  Section~\ref{sec:sigmalt} shows that those two phases, and not
+the moduli, decide the \emph{sign} of $\sig{LT}$.
 
 \subsection{What is free and what is tied}
 
@@ -226,19 +263,22 @@ assumption worth stating.  For fit \texttt{\fittag}:
 \begin{center}
 \begin{tabular}{lcccc}
 \toprule
-block & slope $u$ & slope $d$ & $d/u$ ratio & phase $\varphi$ [rad] \\
+block & slope $u$ & slope $d$ & $d/u$ & phase $\varphi$ [rad] \\
       & \multicolumn{2}{c}{[GeV$^{-2}$, at $x_B = 0.25$]} & & \\
 \midrule
-$\langle H_T\rangle$       & 1.491 & 1.491 (tied to $u$) & $-0.296$ & $-1.261$ \\
-$\langle \bar E_T\rangle$  & 1.110 & 5.720 (free)        & $0.935$  & $0.230$  \\
-$\langle L\rangle$         & 1.780 & $= u$               & $-0.584$ & $0.512$  \\
+$\langle H_T\rangle$       & 1.810 & 1.810 (tied) & $-0.096$ & $-0.429$ \\
+$\langle \bar E_T\rangle$  & 1.254 & 5.666 (free) & $+2.777$ & $+0.454$ \\
+$\langle \tilde E\rangle$  & 0.921 & $= u$        & $-0.802$ & $+0.954$ \\
+$\langle \tilde H\rangle$  & 0.921 & $= u$        & $-0.682$ & $+2.729$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \noindent
 Only $\langle \bar E_T\rangle$ is allowed an independent $t$-slope per
-flavour, and it uses that freedom: the $d$ slope comes out five times the $u$
-slope.  For $\langle H_T\rangle$ and for the longitudinal block the two
-flavours share one slope and differ only in normalisation and phase.  Whether
-$\langle H_T\rangle$ would also want a split slope is not tested here.
+flavour, and it uses that freedom: the $d$ slope comes out four and a half
+times the $u$ slope.  Everywhere else the two flavours share one slope and
+differ only in normalisation and phase, and the two longitudinal blocks share
+their whole shape --- $b'$ and $n_Q$ --- by the tie of
+paragraph~\ref{par:htilde}.  Whether $\langle H_T\rangle$ would also want a
+split slope is not tested here.
