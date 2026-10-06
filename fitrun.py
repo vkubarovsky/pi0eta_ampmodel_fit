@@ -25,7 +25,13 @@ BSLOT = [1, 5, 9, 14, 16, 38]
 # refitted with exactly the same machinery and effort as the new one: this chi2
 # surface has many local minima, and comparing a fresh fit against an older
 # published number would not be a fair test of the Htilde block.
-NPAR  = int(os.environ.get("NPAR", "43"))
+# QDAMP_M2: the longitudinal Q2 damping of amplitudes.py slot 43.  Setting it
+# makes the vector 44 slots long and freezes slot 43 at the given m^2 -- the
+# value travels inside fitpar.npy, so the generator cannot pick up the model and
+# forget the regulator.  Unset leaves the 43-slot model byte-identical.
+QDAMP = os.environ.get("QDAMP_M2")
+QDAMP = float(QDAMP) if QDAMP is not None else None
+NPAR  = int(os.environ.get("NPAR", "44" if QDAMP is not None else "43"))
 XIPOW = float(os.environ.get("XIPOW", "0"))   # power of xi in front of <Etilde>
 if NPAR <= 37:
     del BL["Htil"]; BSLOT.remove(38)
@@ -82,6 +88,9 @@ RWID = float(os.environ.get("RWID", "0.02"))
 RET_FIX = os.environ.get("RET_FIX")
 PROP = {13: (8, float(RET_FIX))} if RET_FIX is not None else {}
 FROZEN = {23, 28, 29, 30, 31, 32, 33} | ({25, 42} if NPAR > 37 else set())
+FIXVAL = {}
+if QDAMP is not None and NPAR > 43:
+    FROZEN |= {43}; FIXVAL[43] = QDAMP
 
 # Sets whose papers quote an overall normalisation uncertainty.  It multiplies
 # every point of the set together, so it cannot go into the per-point errors:
@@ -104,9 +113,9 @@ def bounds():
     # phases at 0.5 and also made the computed-phase branch (p[35] <= -9) of
     # amplitudes.py unreachable.
     LO = np.array(list(F.LO) + [-12., -5., -5., -5., -5., -math.pi, -math.pi, -math.pi, -math.pi, -math.pi]
-                  + [0., 0., -5., -12., -10., 0.])          # 37-42: the Htilde block
+                  + [0., 0., -5., -12., -10., 0., 0.])      # 37-42 Htilde, 43 m^2
     HI = np.array(list(F.HI) + [12., 5., 8., 5., 8., math.pi, math.pi, math.pi, math.pi, math.pi]
-                  + [1e4, 12., 8., 12., 10., 1.])
+                  + [1e4, 12., 8., 12., 10., 1., 25.])
     LO[3] = LO[11] = LO[17] = -12.; HI[3] = HI[11] = HI[17] = 12.
     LO[12] = -8.; HI[12] = 8.; LO[13] = -1e4; HI[13] = 1e4; LO[14] = -2.; HI[14] = 12.
     if NQ_FLOOR > -90:
@@ -123,6 +132,7 @@ def expand(x):
     if NPAR > 42: p[42] = XIPOW
     for t, s in TIES.items(): p[t] = p[s]
     for t, (s, f) in PROP.items(): p[t] = f*p[s]
+    for t, v in FIXVAL.items(): p[t] = v
     return p
 
 SEEDS = os.environ.get("SEEDS")
@@ -155,7 +165,7 @@ def fit(keys, seeds=None):
         if not os.path.exists(src): continue
         z = np.load(src)
         for jitter in (0.0, 0.05):
-            q = np.zeros(NPAR); q[:min(len(z), NPAR)] = z[:NPAR]
+            q = np.zeros(NPAR); q[:min(len(z), NPAR)] = z[:min(len(z), NPAR)]
             if NPAR > 41 and q[37] == 0.0:
                 # A 37-slot seed has no Htilde.  Start it with the shape of the
                 # Etilde block (same slopes, same Q2 power, same d/u ratio) and

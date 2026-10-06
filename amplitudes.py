@@ -41,6 +41,20 @@ Corrected longitudinal sector (present only if len(p) > 41; 2026-09-30):
   37-40 Htil_u  N,b,b',nQ      }  <Htilde>, the forward-surviving non-flip GFF
   41    R_Htil  (Htil_d = R * Htil_u; u-d relative phase tied to p[36])
   42    nx       power of xi in front of <Etilde> in T00m (0 = as before, 1 = GK)
+Longitudinal Q2 damping (present only if len(p) > 43; 2026-10-05):
+  43    m2       Q2/(Q2+m2) multiplies BOTH longitudinal amplitudes, so sigma_L
+                 picks up its SQUARE and sigma_LT, sigma_LT' pick up one power.  m2 = 0 is off and reproduces the 43-slot model
+                 exactly.  Put on the AMPLITUDE and not on sigma_L on purpose:
+                 every Gram inequality then scales consistently -- in
+                 |sigma_LT + i sigma_LT'|^2 <= 2 sigma_L sigma_T both sides pick
+                 up the same factor -- whereas damping sigma_L alone breaks
+                 positivity at small Q2.  Kroll (2026-10-05): sigma_L must vanish
+                 like Q2 at the photon point by gauge invariance, but there is NO
+                 theoretical result for m; it is a fitted scale, and m_rho^2 does
+                 not describe the vector-meson data.  So m2 is a REGULATOR of the
+                 extrapolation, chosen by what it does to the radiative integral,
+                 and is frozen: our lowest fitted Q2 is 1.12 and the data cannot
+                 see it.
 Without slots 37+ the model has NO Htilde: T00p = rho_nf*|T00m| carries the
 sqrt(-t') of the flip amplitude, so sigma_L ~ (-t') -> 0 at the forward peak,
 which contradicts the angular-momentum table of the amplitude note.
@@ -200,6 +214,18 @@ def amplitudes(p, ch, t, xB, Q2):
         nx   = p[42] if len(p) > 42 else 0.0
         T00m = math.sqrt(A*kin)*(xi**nx)*Ec
         T00p = math.sqrt(A*(1 - xi2))*(Hc - xi2/(1 - xi2)*Ec)
+    if len(p) > 43 and p[43] > 0.0:
+        # The FULL factor on the amplitude, not its square root.  With the
+        # leading-twist M_L = C/Q, sqrt(f)*C/Q = C/sqrt(Q2+m2) -> C/m: a nonzero
+        # CONSTANT at the photon point, which is not the required behaviour.
+        # f*C/Q = C*Q/(Q2+m2) = O(Q), so sigma_L = O(Q2).  Measured: our own
+        # sigma_L goes as Q2^-0.87 at fixed W2 = 6, i.e. the 1/Q2 the argument
+        # assumes.  sigma_L then picks up f^2, sigma_LT and sigma_LT' pick up f,
+        # sigma_T and sigma_TT are untouched, and every Gram inequality still
+        # scales consistently -- f^2 on both sides of
+        # |sigma_LT + i sigma_LT'|^2 <= 2 sigma_L sigma_T.
+        g = Q2/(Q2 + p[43])
+        T00p, T00m = T00p*g, T00m*g
     return dict(T00p=T00p, T00m=T00m,
                 T01p=T01p, T01m=D/2+0j,
                 U01p=U01c, U01m=D/2+0j)
