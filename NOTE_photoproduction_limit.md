@@ -98,13 +98,38 @@ and `W2t` together, so vertex xB barely moves.  The exposure is entirely
 through the observed kinematics, i.e. through the box.
 
 The rad/born factor two below `xB = 0.128` is NOT smearing.  In measured-first
-sampling the generator draws the observed point from `sigma_obs` directly, and
-`eta = sigma_obs/sigma_Born` rises monotonically as xB falls -- median 1.01
-above `xB = 0.35`, 2.90 in 0.10-0.128, 4.47 below 0.08 (1400 exact points,
-RG-A box, amp2609).  It is xB and not Q2 doing this: restricted to
-`Q2 = 0.8-1.6` the split is 3.11 vs 1.35, and to `Q2 > 2.0` it is 3.48 vs
-1.31.  So the low-xB corner is where the observed cross-section genuinely
-sits, 3-4x its own Born value -- not an artefact an unfolding could undo.
+sampling the generator draws the observed point from `sigma_obs` directly, so
+the rad arm's excess at low xB is the shape of `eta = sigma_obs/sigma_Born`,
+which rises monotonically as xB falls.  Measured two independent ways --
+exactly, as the cross-section-weighted `sum(sigma_obs)/sum(sigma_Born)` over
+box points in each bin, and from the delivered 2 x 1e6-event campaign via the
+identity `etabar_i = [f_rad(i)/f_born(i)] * C_rad` (Launch generator session,
+`docs/farm_practice.md` in exclurad_py):
+
+    xB bin            exact, phi integrated     from the two arms
+    0.350-1.000            0.878 +- 0.006             0.99
+    0.128-0.180            1.29  +- 0.02              1.43
+    0.100-0.128            1.63  +- 0.03              1.91
+    0.000-0.080            3.04  +- 0.09              4.75
+
+So below `xB = 0.08` the observed cross-section is three to five times its own
+Born value -- not an artefact an unfolding could undo, but where `sigma_obs`
+genuinely sits.  Note also `etabar < 1` at high xB by all three estimates: the
+virtual plus soft correction goes negative there and the real-photon tail does
+not make it up, so the usual intuition that radiation increases the yield is
+built on the low-xB end of this curve only.
+
+The two estimates differ by 10-50 %, worst in the bottom bin.  Every bin of the
+campaign-based column is linear in `C_rad = 1.2501` (the ratio of the two arms'
+quoted `sigma_nb`), for which an independent MC gives 1.173 +- 0.028; and the
+exact column's bottom bin is a thin corner of the box that 600 points sample
+poorly.  Do not quote either column to better than the spread.
+
+CAUTION on `production/eta_scan.py`: it evaluates every point at `phi = 0`,
+where eta is largest, and takes medians over uniformly drawn points.  Both
+inflate the result -- its 4.47 and 2.90 for the bottom two bins are the worst
+case at the worst phi, not eta as the sample sees it.  An earlier version of
+this note quoted them as the latter.
 
 **The conditional.** All of the above holds because the production box starts
 at `Q2 = 0.80`, where `xB` is about 0.17 and the slope parameter is 2.33
