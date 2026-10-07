@@ -79,3 +79,36 @@ sector, and it would move the fitted region as well: at `xB = 0.13` the slope
 is 2.66 and any saturating form changes it.  Not a night's work, and not to be
 done without deciding first whether this model is meant to describe
 `Q2 < 1` at all.
+
+## The box is what makes the divergence harmless, and that is conditional
+
+Measured across two campaigns and two models (Launch generator's amp2609
+reference, 200 000 events/arm, and the amp2614 run here), the generated sample
+simply does not reach the region where the slope parameter goes bad:
+
+    born  xB < 0.128   8.1 % (amp2614)   8.28 % (amp2609)
+    rad   xB < 0.128  17.5 %            16.98 %
+    both  xB < 0.05     0.00 %            0.00 %
+
+Radiation does not help it get there either.  Zeroing the model below an xB
+threshold and recomputing `sigma_obs` gives 0.00 % of the weight from vertex
+`xB < 0.05` at every box point tested; the one point with any weight below
+0.128 is the one whose OBSERVED xB is already 0.075.  Radiation lowers `Q2t`
+and `W2t` together, so vertex xB barely moves.  The exposure is entirely
+through the observed kinematics, i.e. through the box.
+
+The rad/born factor two below `xB = 0.128` is NOT smearing.  In measured-first
+sampling the generator draws the observed point from `sigma_obs` directly, and
+`eta = sigma_obs/sigma_Born` rises monotonically as xB falls -- median 1.01
+above `xB = 0.35`, 2.90 in 0.10-0.128, 4.47 below 0.08 (1400 exact points,
+RG-A box, amp2609).  It is xB and not Q2 doing this: restricted to
+`Q2 = 0.8-1.6` the split is 3.11 vs 1.35, and to `Q2 > 2.0` it is 3.48 vs
+1.31.  So the low-xB corner is where the observed cross-section genuinely
+sits, 3-4x its own Born value -- not an artefact an unfolding could undo.
+
+**The conditional.** All of the above holds because the production box starts
+at `Q2 = 0.80`, where `xB` is about 0.17 and the slope parameter is 2.33
+(against 2.34 measured in the delivered structure functions -- agreement to
+half a per cent).  If anyone lowers the Q2 floor below 0.80 to chase outbending
+acceptance, the unbounded slope parameter stops being harmless, and nothing in
+the code or the cards would say so.
