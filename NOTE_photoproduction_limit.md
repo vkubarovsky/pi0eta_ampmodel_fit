@@ -100,36 +100,37 @@ through the observed kinematics, i.e. through the box.
 The rad/born factor two below `xB = 0.128` is NOT smearing.  In measured-first
 sampling the generator draws the observed point from `sigma_obs` directly, so
 the rad arm's excess at low xB is the shape of `eta = sigma_obs/sigma_Born`,
-which rises monotonically as xB falls.  Measured two independent ways --
-exactly, as the cross-section-weighted `sum(sigma_obs)/sum(sigma_Born)` over
-box points in each bin, and from the delivered 2 x 1e6-event campaign via the
-identity `etabar_i = [f_rad(i)/f_born(i)] * C_rad` (Launch generator session,
-`docs/farm_practice.md` in exclurad_py):
+which rises monotonically as xB falls.  Measured from the delivered
+2 x 1e6-event campaign with no model evaluation at all, via
+`etabar_i = [f_rad(i)/f_born(i)] * C_rad` (Launch generator session,
+`docs/farm_practice.md` in exclurad_py), with
+`C_rad = 1.25010 +- 0.00175` from the chunk scatter of 200 chunks per arm:
 
-    xB bin            exact, phi integrated     from the two arms
-    0.350-1.000            0.878 +- 0.006             0.99
-    0.128-0.180            1.29  +- 0.02              1.43
-    0.100-0.128            1.63  +- 0.03              1.91
-    0.000-0.080            3.04  +- 0.09              4.75
+    xB bin            etabar
+    0.350-1.000        0.99
+    0.128-0.180        1.43
+    0.100-0.128        1.91
+    0.000-0.080        4.75
 
-So below `xB = 0.08` the observed cross-section is three to five times its own
+So below `xB = 0.08` the observed cross-section is nearly five times its own
 Born value -- not an artefact an unfolding could undo, but where `sigma_obs`
-genuinely sits.  Note also `etabar < 1` at high xB by all three estimates: the
-virtual plus soft correction goes negative there and the real-photon tail does
-not make it up, so the usual intuition that radiation increases the yield is
-built on the low-xB end of this curve only.
+genuinely sits.  Note also `etabar < 1` at high xB: the virtual plus soft
+correction goes negative there and the real-photon tail does not make it up,
+so the usual intuition that radiation increases the yield is built on the
+low-xB end of this curve only.
 
-The two estimates differ by 10-50 %, worst in the bottom bin.  Every bin of the
-campaign-based column is linear in `C_rad = 1.2501` (the ratio of the two arms'
-quoted `sigma_nb`), for which an independent MC gives 1.173 +- 0.028; and the
-exact column's bottom bin is a thin corner of the box that 600 points sample
-poorly.  Do not quote either column to better than the spread.
-
-CAUTION on `production/eta_scan.py`: it evaluates every point at `phi = 0`,
-where eta is largest, and takes medians over uniformly drawn points.  Both
-inflate the result -- its 4.47 and 2.90 for the bottom two bins are the worst
-case at the worst phi, not eta as the sample sees it.  An earlier version of
-this note quoted them as the latter.
+A SECOND, INDEPENDENT ESTIMATE WAS WRONG AND IS WITHDRAWN.  An earlier version
+of this note carried an "exact" column (0.878, 1.29, 1.63, 3.04) computed by
+integrating `rc_factor` over each bin.  It built the model once with
+`t_nucl = -0.30` and never updated it, and the model's t dependence lives in
+`t_nucl` -- the `t` passed to `rc_factor` is the SHIFTED transfer used inside
+the radiative integral (`exclurad_py/models/base.py:318`).  So it integrated a
+cross section with NO t dependence over `|t| = 0.001-2.50`.  Measured cost:
+`C_rad` comes out 1.143 frozen against 1.294 per point, against the campaign's
+1.25010.  A frozen `t_nucl` returns a finite, plausible cross section at every
+point and nothing raises, which is why it survived several rounds of checking.
+Discard every number from that column; the campaign column above is untouched,
+since it comes from two histograms and the generator.
 
 **The conditional.** All of the above holds because the production box starts
 at `Q2 = 0.80`, where `xB` is about 0.17 and the slope parameter is 2.33
